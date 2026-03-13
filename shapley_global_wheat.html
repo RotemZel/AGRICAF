@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wheat SHAP — Intensity & Impact Heatmaps</title>
+<title>Wheat — Relative Intensity & Impact </title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400&display=swap');
 
@@ -114,8 +114,8 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);
 <div id="app">
   <div id="sidebar">
     <div>
-      <div class="sb-title">Wheat SHAP<br>Feature Heatmaps</div>
-      <div class="sb-sub">Global Agnostic · Shapley</div>
+      <div class="sb-title">Wheat <br>Feature Heatmaps</div>
+      <div class="sb-sub">Global Agnostic · Shapley Values Based</div>
     </div>
 
     <div>
@@ -163,8 +163,8 @@ html,body{width:100%;height:100%;background:var(--bg);color:var(--text);
     </div>
 
     <div style="margin-top:auto;font-size:0.52rem;color:var(--muted);line-height:1.8">
-      <strong style="color:var(--text)">Intensity</strong> = |SHAP| magnitude<br>
-      <strong style="color:var(--text)">Impact</strong> = signed SHAP direction<br>
+      <strong style="color:var(--text)">Intensity</strong> = Shapley based, Relative <br>
+      <strong style="color:var(--text)">Impact</strong> = Shapley based, direction<br>
       x = forecast month · y = feature
     </div>
   </div>
