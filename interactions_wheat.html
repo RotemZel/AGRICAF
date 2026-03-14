@@ -125,6 +125,11 @@
     </div>
 
     <div>
+      <div class="section-lbl">Forecast month</div>
+      <div class="lag-grid" id="month-pills"></div>
+    </div>
+
+    <div>
       <div class="section-lbl">Controls</div>
 
       <div class="ctrl-row">
@@ -149,7 +154,7 @@
       <div class="stat-grid">
         <div class="stat-box"><div class="stat-val" id="s-nodes">—</div><div class="stat-lbl">Nodes</div></div>
         <div class="stat-box"><div class="stat-val" id="s-edges">—</div><div class="stat-lbl">All edges</div></div>
-        <div class="stat-box"><div class="stat-val" id="s-groups">4</div><div class="stat-lbl">Groups</div></div>
+        <div class="stat-box"><div class="stat-val" id="s-months">12</div><div class="stat-lbl">Months</div></div>
         <div class="stat-box"><div class="stat-val" id="s-vis">—</div><div class="stat-lbl">Visible</div></div>
       </div>
     </div>
@@ -157,7 +162,8 @@
     <div style="margin-top:auto;font-size:0.53rem;color:var(--muted);line-height:1.75">
       <strong style="color:var(--text)">Hover</strong> a node to highlight connections.<br>
       <strong style="color:var(--text)">Click legend</strong> to filter groups.<br>
-      Edge colour &amp; width = interaction strength.
+      Edge colour &amp; width = interaction strength.<br>
+      <strong style="color:var(--text)">Month pills</strong> filter by lag suffix.
     </div>
 
   </div><!-- /sidebar -->
@@ -193,6 +199,7 @@ const intensityScale = d3.scaleLinear()
 
 // ── State ─────────────────────────────────────────────────────────────────────
 let activeGroups = new Set(GROUPS);
+let activeMonths = new Set([1,2,3,4,5,6,7,8,9,10,11,12]);
 let threshold = 0, tension = 0.85, edgeOpacity = 0.6;
 
 // ── Legend ────────────────────────────────────────────────────────────────────
@@ -271,15 +278,32 @@ function redraw() {
     };
   });
 
+  // Helper: extract numeric suffix from variable name (e.g. obs._6 → 6, urea_p_10 → 10)
+  function nodeSuffix(name) {
+    const m = name.match(/_(\d+)$/);
+    return m ? +m[1] : null;
+  }
+
   const visEdges = RAW.edges.filter(e => {
     const fn = nodeMap[e.from], tn = nodeMap[e.to];
-    return fn && tn && activeGroups.has(fn.group) && activeGroups.has(tn.group)
-           && e.weight >= threshold;
+    if (!fn || !tn) return false;
+    if (!activeGroups.has(fn.group) || !activeGroups.has(tn.group)) return false;
+    if (e.weight < threshold) return false;
+    // Month filter: if both endpoints have no numeric suffix, always show.
+    // If either endpoint has a suffix, at least one must match activeMonths.
+    const sf = nodeSuffix(e.from), st = nodeSuffix(e.to);
+    if (sf !== null || st !== null) {
+      const fOk = sf === null || activeMonths.has(sf);
+      const tOk = st === null || activeMonths.has(st);
+      if (!fOk && !tOk) return false;
+    }
+    return true;
   });
 
   document.getElementById('s-nodes').textContent = n;
   document.getElementById('s-edges').textContent = RAW.edges.length;
   document.getElementById('s-vis').textContent   = visEdges.length;
+  document.getElementById('s-months').textContent = activeMonths.size;
 
   // ── Edges ─────────────────────────────────────────────────────────────────
   const edgeSel = gEdges.selectAll('path').data(visEdges, d => d.from+d.to);
@@ -384,6 +408,36 @@ function redraw() {
     infobar.textContent = 'hover a node to explore its interactions';
   });
 }
+
+
+// ── Month pills ───────────────────────────────────────────────────────────────
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const monthPillContainer = document.getElementById('month-pills');
+for (let m = 1; m <= 12; m++) {
+  const pill = document.createElement('div');
+  pill.className = 'lag-pill on';
+  pill.textContent = MONTH_NAMES[m-1].slice(0,1) + m;
+  pill.dataset.month = m;
+  pill.addEventListener('click', () => {
+    if (activeMonths.has(m)) {
+      if (activeMonths.size === 1) return;
+      activeMonths.delete(m); pill.classList.remove('on');
+    } else {
+      activeMonths.add(m); pill.classList.add('on');
+    }
+    redraw();
+  });
+  monthPillContainer.appendChild(pill);
+}
+const selAllM = document.createElement('div');
+selAllM.textContent = 'all';
+selAllM.style.cssText = 'font-size:0.52rem;color:var(--accent);cursor:pointer;text-decoration:underline;margin-top:2px;width:100%';
+selAllM.addEventListener('click', () => {
+  for (let m=1;m<=12;m++) activeMonths.add(m);
+  monthPillContainer.querySelectorAll('.lag-pill').forEach(p=>p.classList.add('on'));
+  redraw();
+});
+monthPillContainer.appendChild(selAllM);
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 initSVG();
