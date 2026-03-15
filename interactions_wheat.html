@@ -269,7 +269,7 @@ function draw() {
       .attr("transform", xf+(flip?" rotate(180)":""))
       .attr("dx", flip?-8:8).attr("dy","0.35em")
       .attr("text-anchor", flip?"end":"start")
-      .attr("font-size","8.5px").attr("fill",col).attr("opacity",0.85)
+      .attr("font-size","11px").attr("fill",col).attr("opacity",0.85)
       .style("cursor","default").text(d.data.name)
       .on("mouseover", function(event) {
         const nm = d.data.name;
