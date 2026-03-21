@@ -28,3 +28,5 @@ This repository presents **Stage 4** of AGRICAF: explainability and
 communication of forecasts across multiple audience levels.
 
 ![AGRICAF Workflow](https://github.com/user-attachments/assets/a381b98b-4de1-4db5-9629-bce9c4fa77a4)
+
+<a href="https://doi.org/10.5281/zenodo.19148941"><img src="https://zenodo.org/badge/1180637670.svg" alt="DOI"></a>
