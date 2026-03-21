@@ -7,7 +7,7 @@ forecasting, machine learning, and statistical inference. I develop open,
 interpretable frameworks that combine econometric theory with machine learning 
 for robust price prediction.
 
-I believe that good forecasts should come with good explanations — and both 
+I believe that good forecasts should come with good explanations, and both 
 should be available to everyone.
 
 📬 I welcome questions, collaborations, and feedback: rotem.zelingher@wu.ac.at
@@ -16,7 +16,7 @@ should be available to everyone.
 
 **AGRICAF** (Agricultural Commodity Forecasting Framework) is an open-source 
 pipeline integrating multiple statistical and ML methods for forecasting global 
-agricultural commodity prices — monthly, up to one year ahead.
+agricultural commodity prices (monthly, up to one year ahead).
 
 The framework emphasises transparency and policy relevance, with a particular 
 focus on making price forecasts and market intelligence accessible to 
