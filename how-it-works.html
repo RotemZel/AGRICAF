@@ -241,30 +241,6 @@
     AGRICAF is a four-stage pipeline that transforms raw, publicly available data into explained commodity price forecasts. It begins by assembling and harmonising inputs from multiple sources — trade statistics, production figures, stock reports, and monthly price histories — into consistent predictor datasets. A screening stage then identifies which variables genuinely matter for each commodity, calendar month, and forecast horizon, using cross-validated ensemble ranking to reduce overfitting risk before any forecast is generated. The forecasting stage combines up to ten statistical and machine learning models under expanding-window cross-validation to produce monthly price predictions up to twelve months ahead, automatically selecting the most accurate model for each month-horizon pair. Finally, every forecast is explained using model-agnostic interpretability methods — Shapley values, LIME surrogates, partial dependence, and feature interaction statistics — organised into four communication levels that range from a global annual overview to a single instance-level prediction, so that results are accessible to researchers, policymakers, and practitioners alike.
   </p>
 
-  <!-- Stage pills -->
-  <div class="stages">
-    <div class="stage-pill">
-      <div class="stage-number">Stage 1</div>
-      <div class="stage-name">Data Assembly</div>
-      <div class="stage-desc">Harmonise heterogeneous sources into 12 × 12 monthly price targets.</div>
-    </div>
-    <div class="stage-pill">
-      <div class="stage-number">Stage 2</div>
-      <div class="stage-name">Screening Predictors</div>
-      <div class="stage-desc">LOO-CV ensemble ranking retains the top predictors per month × horizon.</div>
-    </div>
-    <div class="stage-pill">
-      <div class="stage-number">Stage 3</div>
-      <div class="stage-name">Generating Forecasts</div>
-      <div class="stage-desc">10 models, expanding-window CV, auto-selected by cumulative error.</div>
-    </div>
-    <div class="stage-pill">
-      <div class="stage-number">Stage 4</div>
-      <div class="stage-name">Explaining Forecasts</div>
-      <div class="stage-desc">SHAP, LIME, PDP, and interactions across four communication levels.</div>
-    </div>
-  </div>
-
   <!-- Workflow image -->
   <div class="workflow-section">
     <span class="workflow-label">AGRICAF Pipeline · Overview</span>
