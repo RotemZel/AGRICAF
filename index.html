@@ -119,6 +119,131 @@
     }
     .btn-secondary:hover { background: var(--warm1); border-color: var(--warm4); transform: translateY(-2px); }
 
+    /* ── Why AGRICAF button ── */
+    .btn-why {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: transparent;
+      color: var(--text);
+      padding: 0.8rem 1.8rem;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-decoration: none;
+      border: 1.5px solid var(--warm3);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+    .btn-why:hover { background: var(--warm1); border-color: var(--warm4); transform: translateY(-2px); }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(61,43,31,0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--cream);
+      border: 1.5px solid var(--warm3);
+      border-radius: 6px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2.4rem 2.4rem 2rem;
+      position: relative;
+      animation: fadeUp 0.3s ease both;
+      box-shadow: 0 24px 60px rgba(61,43,31,0.18);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1.2rem;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--muted);
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--brown); }
+
+    .modal-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--warm4);
+      border: 1px solid var(--warm3);
+      border-radius: 2px;
+      padding: 0.2rem 0.65rem;
+      margin-bottom: 1rem;
+    }
+
+    .modal h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 1.2rem;
+      line-height: 1.2;
+    }
+
+    .modal-body p {
+      font-size: 0.92rem;
+      line-height: 1.75;
+      color: var(--text);
+      margin-bottom: 0.9rem;
+    }
+
+    .modal-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brown);
+      margin: 1.5rem 0 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-pullquote {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--brown);
+      border-left: 3px solid var(--warm3);
+      padding-left: 1rem;
+      margin: 1.2rem 0;
+    }
+
+    .modal-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.2rem;
+    }
+
+    .modal-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--warm5);
+      background: var(--warm1);
+      border: 1px solid var(--warm2);
+      border-radius: 99px;
+      padding: 0.25rem 0.8rem;
+    }
+
     .divider {
       display: flex;
       align-items: center;
@@ -385,10 +510,49 @@
   </p>
   <div class="cta-buttons">
     <a class="btn-primary" href="wheat.html">📈 View Forecasts</a>
-    <a class="btn-secondary" href="#about">ℹ️ How It Works</a>
+    <button class="btn-why" onclick="document.getElementById('whyModal').classList.add('open')">💡 Why AGRICAF?</button>
+    <a class="btn-secondary" href="https://github.com/RotemZel/communicate-wheat-forecasts#readme" target="_blank">ℹ️ How It Works</a>
   </div>
   <div class="divider">✦</div>
 </header>
+
+<!-- ── Why AGRICAF Modal ── -->
+<div id="whyModal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('whyModal').classList.remove('open')">✕</button>
+    <span class="modal-tag">Why AGRICAF?</span>
+    <h2>Good Forecasts Should Come With Good Explanations</h2>
+    <div class="modal-body">
+      <p>In February 2022, a tonne of wheat cost around $340 on the global market. Four months later, it cost nearly $440 — a 30% increase caused by Russia's invasion of Ukraine. In France or Germany, bread prices rose by a few percent. In Egypt, which sources over 60% of its wheat from Russia and Ukraine, the shock threatened the livelihoods of millions. Across East Africa, it compounded an ongoing drought to push communities toward famine.</p>
+      <p class="modal-pullquote">When global commodity prices spike, high-income countries absorb the shock. Low-income countries bear the full force.</p>
+      <p>What makes these crises especially damaging is not just the price level — it's the <em>surprise</em>. Farmers in developing regions often have no reliable way to anticipate whether prices will rise or fall in coming months. Without that information, they cannot decide when to sell their harvest, how much to store, or what to plant next season. The information that would allow better decisions exists — buried in trade data, stock reports, and price histories — but it is not packaged in a way that reaches the people who need it most.</p>
+
+      <h3>What Already Exists — and What Is Missing</h3>
+      <p>Existing monitoring platforms like FAO's FPMA and WFP's Economic Explorer do excellent work tracking food prices. But they <em>monitor</em> without <em>forecasting</em> — they tell you what prices did last month, not what they are likely to do next month. For a policymaker or farmer planning ahead, this is like driving by looking only in the rearview mirror.</p>
+      <p>Forecasting tools do exist, but they are locked behind expensive subscriptions designed for corporate clients, rely on proprietary data unavailable to the public, and typically operate as black boxes — users receive a prediction but no insight into how it was generated or what assumptions drove the result.</p>
+
+      <h3>What AGRICAF Does Differently</h3>
+      <p><strong>It forecasts.</strong> AGRICAF produces monthly price forecasts up to twelve months ahead for five global agricultural commodities: wheat, maize, soybean, arabica coffee, and sugar. All inputs come from publicly available sources.</p>
+      <p><strong>It explains every forecast.</strong> For each prediction, AGRICAF reports which input features contributed most, how much each contributed, and whether each feature pushed the price up or down. Explanations are organised into four communication levels — from a global annual overview down to a specific forecast for a specific month and year — so that different users can engage at different depths.</p>
+      <p><strong>It is fully open.</strong> Every step in the pipeline is documented and reproducible. A cooperative, a government ministry, or a research institute can run it independently, update forecasts when new data arrives, and audit every calculation.</p>
+
+      <h3>Who It Is For</h3>
+      <p>AGRICAF is designed for researchers in agricultural economics and food policy, analysts at food security organisations who need to understand what drives commodity price movements, and data scientists who want to extend the framework to new commodities or regions.</p>
+      <p class="modal-pullquote">Whether you are a researcher looking for a new approach to an old problem, or an analyst trying to make sense of volatile markets — if you believe that good forecasts should come with good explanations, AGRICAF is for you.</p>
+
+      <div class="modal-pills">
+        <span class="modal-pill">🌾 Wheat</span>
+        <span class="modal-pill">🌽 Maize</span>
+        <span class="modal-pill">🫘 Soybean</span>
+        <span class="modal-pill">☕ Arabica Coffee</span>
+        <span class="modal-pill">🍬 Sugar</span>
+        <span class="modal-pill">12-month horizon</span>
+        <span class="modal-pill">SHAP · LIME · Interactions</span>
+        <span class="modal-pill">Open data</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ── Commodities ── -->
 <div id="commodities" class="section-wrap">
@@ -438,6 +602,61 @@
   </div>
 </div>
 
+<!-- ── Wheat Figures ── -->
+<div id="wheat-figures" class="figures-section">
+  <div class="section-header" style="margin-bottom:2rem;">
+    <span class="tag">Wheat · Stage 4</span>
+    <h2>Explainability Figures</h2>
+    <p class="section-sub">SHAP values, LIME surrogates, partial dependence, and feature interactions</p>
+  </div>
+
+  <div class="figures-grid">
+
+    <a class="card" href="shapley_global_wheat.html">
+      <span class="card-label">SHAP · Global</span>
+      <span class="card-title">Shapley Global Importance</span>
+      <p class="card-desc">Average absolute SHAP values across all forecasts — which predictors drive wheat prices most consistently.</p>
+      <span class="card-arrow">Open figure →</span>
+    </a>
+
+    <a class="card" href="shapley_local_wheat.html">
+      <span class="card-label">SHAP · Local</span>
+      <span class="card-title">Shapley Local Explanations</span>
+      <p class="card-desc">Instance-level SHAP decompositions showing how each predictor contributes to a specific forecast.</p>
+      <span class="card-arrow">Open figure →</span>
+    </a>
+
+    <a class="card" href="shapley_pdp_wheat.html">
+      <span class="card-label">SHAP · PDP</span>
+      <span class="card-title">Partial Dependence Plots</span>
+      <p class="card-desc">Marginal effect of individual predictors on forecast output, averaged over the data distribution.</p>
+      <span class="card-arrow">Open figure →</span>
+    </a>
+
+    <a class="card" href="lime_global_wheat.html">
+      <span class="card-label">LIME · Global</span>
+      <span class="card-title">LIME Global Surrogates</span>
+      <p class="card-desc">Global summary of LIME local surrogate models — interpretable approximations of the forecast model.</p>
+      <span class="card-arrow">Open figure →</span>
+    </a>
+
+    <a class="card" href="lime_local_wheat.html">
+      <span class="card-label">LIME · Local</span>
+      <span class="card-title">LIME Local Surrogates</span>
+      <p class="card-desc">Per-observation LIME explanations highlighting which predictors matter most for individual forecasts.</p>
+      <span class="card-arrow">Open figure →</span>
+    </a>
+
+    <a class="card" href="interactions_wheat.html">
+      <span class="card-label">Interactions</span>
+      <span class="card-title">Feature Interactions</span>
+      <p class="card-desc">Friedman H-statistic visualisation — pairwise predictor interactions driving wheat price forecasts.</p>
+      <span class="card-arrow">Open figure →</span>
+    </a>
+
+  </div>
+</div>
+
 <!-- ── About ── -->
 <section id="about" class="about">
   <div class="about-inner">
@@ -449,11 +668,11 @@
       <a class="about-contact" href="/cdn-cgi/l/email-protection#e7958893828ac99d828b8e89808f8295a79092c98684c98693">📬 I welcome questions, collaborations, and feedback: <span class="__cf_email__" data-cfemail="6c1e031809014216090005020b04091e2c1b19420d0f420d18">[email&#160;protected]</span></a>
 
       <h3>The AGRICAF Framework</h3>
-      <p><strong>AGRICAF</strong> (Agricultural Commodity Forecasting Framework) is an accessible framework integrating multiple statistical and ML methods for forecasting global agricultural commodity prices (monthly, up to one year ahead).</p>
+      <p><strong>AGRICAF</strong> (Agricultural Commodity Forecasting Framework) is an open-source pipeline integrating multiple statistical and ML methods for forecasting global agricultural commodity prices (monthly, up to one year ahead).</p>
       <p>The framework emphasises transparency and policy relevance, with a particular focus on making price forecasts and market intelligence accessible to non-specialist and vulnerable stakeholders in low-income contexts.</p>
 
       <h3>This Repository</h3>
-      <p>This repository presents <strong>Stages 3 + 4</strong> of AGRICAF: price forecasts & explainability and communication of forecasts across multiple audience levels.</p>
+      <p>This repository presents <strong>Stage 4</strong> of AGRICAF: explainability and communication of forecasts across multiple audience levels.</p>
 
       <div class="about-meta">
         <a href="https://doi.org/10.5281/zenodo.19148941" target="_blank">
