@@ -325,9 +325,16 @@
   </div>
   <p class="forecast-description">Observed prices compared to model predictions across multiple time horizons. The shaded region shows future months where outcomes are not yet known.</p>
   
-  <div class="forecast-plot-wrapper">
+  <div class="forecast-plot-wrapper" onclick="openForecast()">
+    <button class="expand-btn" onclick="event.stopPropagation(); openForecast()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+      </svg>
+      Expand
+    </button>
     <iframe 
-      src="Sugar/forecast_Sugar.html" 
+      src="Sugar/forecast_sugar.html" 
       class="forecast-iframe"
       title="Sugar Price Forecast Chart"
       loading="lazy">
@@ -349,6 +356,39 @@
     </div>
   </div>
 </div>
+
+<!-- ── Fullscreen overlay ── -->
+<div id="forecast-overlay" onclick="if(event.target===this)closeForecast()">
+  <div class="overlay-inner">
+    <div class="overlay-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      <h3>Sugar · Forecast Timeline</h3>
+      <button class="overlay-close" onclick="closeForecast()">✕</button>
+    </div>
+    <iframe
+      id="overlay-iframe"
+      class="overlay-iframe"
+      title="Sugar Price Forecast — Full View">
+    </iframe>
+  </div>
+</div>
+
+<script>
+  function openForecast() {
+    const overlay = document.getElementById('forecast-overlay');
+    const iframe  = document.getElementById('overlay-iframe');
+    if (!iframe.src) iframe.src = 'Sugar/forecast_sugar.html';
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeForecast() {
+    document.getElementById('forecast-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeForecast(); });
+</script>
 
 
   <!-- Explanation plots -->
