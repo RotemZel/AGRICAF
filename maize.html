@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AGRICAF · Wheat</title>
+  <title>AGRICAF · Maize</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -305,11 +305,11 @@
 
   <!-- Commodity header -->
   <div class="commodity-header">
-    <span class="commodity-emoji">🌾</span>
+    <span class="commodity-emoji">🌽</span>
     <div>
-      <h1>Wheat</h1>
+      <h1>Maize</h1>
       <p>Global prices, production levels, and the factors that move them.</p>
-      <span class="ra-badge">Forecast accuracy (RA): 0.76</span>
+      <span class="ra-badge">Forecast accuracy (RA): 0.71</span>
     </div>
   </div>
 
@@ -327,9 +327,9 @@
   
   <div class="forecast-plot-wrapper">
     <iframe 
-      src="Wheat/forecast_wheat.html" 
+      src="Maize/forecast_Maize.html" 
       class="forecast-iframe"
-      title="Wheat Price Forecast Chart"
+      title="Maize Price Forecast Chart"
       loading="lazy">
     </iframe>
   </div>
@@ -361,16 +361,16 @@
   <div class="level-grid">
 
     <!-- Level 1a: Global overview (SHAP) -->
-    <a class="level-card" href="Wheat/shapley_global_wheat.html">
+    <a class="level-card" href="Maize/shapley_global_Maize.html">
       <span class="level-badge">Level 1 · Overview</span>
-      <span class="level-title">What drives wheat prices overall?</span>
+      <span class="level-title">What drives Maize prices overall?</span>
       <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
-      <p class="level-desc">A bird's-eye view showing which factors most consistently push wheat prices up or down. Covers all forecast months and horizons at once. Colours indicate the strength and direction of each factor's influence.</p>
+      <p class="level-desc">A bird's-eye view showing which factors most consistently push Maize prices up or down. Covers all forecast months and horizons at once. Colours indicate the strength and direction of each factor's influence.</p>
       <span class="level-arrow">Open chart →</span>
     </a>
 
     <!-- Level 1b: Global overview (LIME) -->
-    <a class="level-card" href="Wheat/lime_global_wheat.html">
+    <a class="level-card" href="Maize/lime_global_Maize.html">
       <span class="level-badge">Level 1 · Cross-check</span>
       <span class="level-title">Confirming the big picture</span>
       <p class="level-question">"Do different methods agree on which factors matter most?"</p>
@@ -379,7 +379,7 @@
     </a>
 
     <!-- Level 2a: Month and horizon specific (SHAP) -->
-    <a class="level-card" href="Wheat/shapley_local_wheat.html">
+    <a class="level-card" href="Maize/shapley_local_Maize.html">
       <span class="level-badge">Level 2 · By month and horizon</span>
       <span class="level-title">What drives prices for a specific month?</span>
       <p class="level-question">"Which factors matter for the 3-month-ahead forecast made each September, and how consistent are they across years?"</p>
@@ -388,7 +388,7 @@
     </a>
 
     <!-- Level 2b: Month and horizon specific (LIME) -->
-    <a class="level-card" href="Wheat/lime_local_wheat.html">
+    <a class="level-card" href="Maize/lime_local_Maize.html">
       <span class="level-badge">Level 2 · Cross-check</span>
       <span class="level-title">Confirming the monthly pattern</span>
       <p class="level-question">"Does the monthly picture hold up under a different method?"</p>
@@ -397,7 +397,7 @@
     </a>
 
     <!-- Level 3: Factor specific (PDP) -->
-    <a class="level-card" href="Wheat/shapley_pdp_wheat.html">
+    <a class="level-card" href="Maize/shapley_pdp_Maize.html">
       <span class="level-badge">Level 3 · Single factor</span>
       <span class="level-title">How does one factor affect the forecast?</span>
       <p class="level-question">"How do changes in, say, production levels translate into changes in the price forecast?"</p>
@@ -406,10 +406,10 @@
     </a>
 
     <!-- Level 4: Case specific (interactions) -->
-    <a class="level-card" href="Wheat/interactions_wheat.html">
+    <a class="level-card" href="Maize/interactions_Maize.html">
       <span class="level-badge">Level 4 · Specific forecast</span>
       <span class="level-title">Why did the model predict this, for this month?</span>
-      <p class="level-question">"Why did AGRICAF predict a 20% wheat price increase in March 2022?"</p>
+      <p class="level-question">"Why did AGRICAF predict a 20% Maize price increase in March 2022?"</p>
       <p class="level-desc">The most detailed view. Explains a single forecast for a chosen month, horizon, and year. Shows which factors pushed the prediction up or down, by how much, and how the observed values of those factors compare to historical norms. For forensic analysis of specific events.</p>
       <span class="level-arrow">Open chart →</span>
     </a>
@@ -423,7 +423,7 @@
   <p>Agricultural Commodity Analysis and Forecasts</p>
   <p style="margin-top:0.25rem;">
     Rotem Zelingher · Vienna University of Economics and Business (WU) ·
-    <a href="https://github.com/RotemZel/communicate-wheat-forecasts" target="_blank">GitHub</a>
+    <a href="https://github.com/RotemZel/communicate-Maize-forecasts" target="_blank">GitHub</a>
   </p>
 </footer>
 
