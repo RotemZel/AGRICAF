@@ -443,6 +443,96 @@
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+
+    /* ── Forecast panel ── */
+    #forecast-panel {
+      display: none;
+      max-width: 960px;
+      margin: 2.5rem auto 0;
+      padding: 0 1.5rem;
+      animation: fadeUp 0.35s ease both;
+    }
+    #forecast-panel.open { display: block; }
+
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+    @media (max-width: 680px) {
+      .forecast-grid { grid-template-columns: 1fr; }
+    }
+
+    .forecast-tile {
+      background: white;
+      border: 1px solid var(--warm2);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
+
+    .forecast-tile-header {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 1rem 1.2rem 0.75rem;
+      border-bottom: 1px solid var(--warm1);
+    }
+    .forecast-tile-header span {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--brown);
+    }
+    .tile-emoji { font-size: 1.1rem; }
+    .tile-ra {
+      margin-left: auto;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--warm5);
+      background: var(--warm1);
+      border: 1px solid var(--warm3);
+      border-radius: 99px;
+      padding: 0.15rem 0.55rem;
+      white-space: nowrap;
+    }
+    .forecast-tile iframe {
+      display: block;
+      width: 100%;
+      height: 340px;
+      border: none;
+    }
+    .forecast-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      padding: 0.65rem 1.2rem 0.85rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--warm1);
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+    .legend-line {
+      display: inline-block;
+      width: 22px;
+      height: 3px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .legend-observed { background: var(--brown); }
+    .legend-forecast { background: var(--warm4); }
+    .legend-area-swatch {
+      display: inline-block;
+      width: 16px;
+      height: 12px;
+      border-radius: 3px;
+      background: var(--warm1);
+      border: 1px solid var(--warm3);
+      flex-shrink: 0;
+    }
+
+    .btn-primary.active { background: var(--warm5); }
   </style>
 </head>
 <body>
@@ -457,11 +547,63 @@
     Monthly, up to one year ahead.
   </p>
   <div class="cta-buttons">
-    <a class="btn-primary" href="wheat.html">📈 View Forecasts</a>
+    <button class="btn-primary" id="forecast-toggle" onclick="toggleForecasts(this)">📈 View Forecasts</button>
     <button class="btn-why" onclick="document.getElementById('whyModal').classList.add('open')">💡 Why AGRICAF?</button>
     <a class="btn-secondary" href="how-it-works.html">ℹ️ How It Works</a>
   </div>
 </header>
+
+<!-- ── Forecast panel ── -->
+<div id="forecast-panel">
+  <div class="forecast-grid">
+
+    <div class="forecast-tile">
+      <div class="forecast-tile-header">
+        <span class="tile-emoji">🌾</span>
+        <span>Wheat</span>
+        <span class="tile-ra">RA: 0.74</span>
+      </div>
+      <iframe src="Wheat/forecast_Wheat.html" title="Wheat Price Forecast" loading="lazy"></iframe>
+      <div class="forecast-legend">
+        <div class="legend-item"><span class="legend-line legend-observed"></span>Observed</div>
+        <div class="legend-item"><span class="legend-line legend-forecast"></span>Forecast</div>
+        <div class="legend-item"><span class="legend-area-swatch"></span>Range</div>
+      </div>
+    </div>
+
+    <div class="forecast-tile">
+      <div class="forecast-tile-header">
+        <span class="tile-emoji">🍬</span>
+        <span>Sugar</span>
+        <span class="tile-ra">RA: 0.71</span>
+      </div>
+      <iframe src="Sugar/forecast_Sugar.html" title="Sugar Price Forecast" loading="lazy"></iframe>
+      <div class="forecast-legend">
+        <div class="legend-item"><span class="legend-line legend-observed"></span>Observed</div>
+        <div class="legend-item"><span class="legend-line legend-forecast"></span>Forecast</div>
+        <div class="legend-item"><span class="legend-area-swatch"></span>Range</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function toggleForecasts(btn) {
+    const panel = document.getElementById('forecast-panel');
+    const isOpen = panel.classList.contains('open');
+    if (isOpen) {
+      panel.classList.remove('open');
+      btn.classList.remove('active');
+      btn.textContent = '📈 View Forecasts';
+    } else {
+      panel.classList.add('open');
+      btn.classList.add('active');
+      btn.textContent = '📈 Hide Forecasts';
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+</script>
 
 <!-- ── Why AGRICAF Modal ── -->
 <div id="whyModal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
@@ -542,6 +684,7 @@
       <span class="commodity-emoji">🍬</span>
       <span class="commodity-name">Sugar</span>
       <p class="commodity-desc">Cane and beet production cycles, and energy market linkages.</p>
+      <span class="commodity-arrow">Explore →</span>
     </div>
 
   </div>
