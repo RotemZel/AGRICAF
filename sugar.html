@@ -300,6 +300,7 @@
   </a>
 </nav>
 
+
 <!-- ── Main ── -->
 <div class="container">
 
@@ -364,13 +365,13 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
-      <h3>Sugar · Forecast Timeline</h3>
+      <h3>Wheat · Forecast Timeline</h3>
       <button class="overlay-close" onclick="closeForecast()">✕</button>
     </div>
     <iframe
       id="overlay-iframe"
       class="overlay-iframe"
-      title="Sugar Price Forecast — Full View">
+      title="Wheat Price Forecast — Full View">
     </iframe>
   </div>
 </div>
@@ -379,7 +380,7 @@
   function openForecast() {
     const overlay = document.getElementById('forecast-overlay');
     const iframe  = document.getElementById('overlay-iframe');
-    if (!iframe.src) iframe.src = 'Sugar/forecast_sugar.html';
+    if (!iframe.src) iframe.src = 'Wheat/forecast_wheat.html';
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
@@ -401,7 +402,7 @@
   <div class="level-grid">
 
     <!-- Level 1a: Global overview (SHAP) -->
-    <a class="level-card" href="Sugar/shapley_global_Sugar.html">
+    <a class="level-card" href="Sugar/shapley_global_sugar.html">
       <span class="level-badge">Level 1 · Overview</span>
       <span class="level-title">What drives Sugar prices overall?</span>
       <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
@@ -410,7 +411,7 @@
     </a>
 
     <!-- Level 1b: Global overview (LIME) -->
-    <a class="level-card" href="Sugar/lime_global_Sugar.html">
+    <a class="level-card" href="Sugar/lime_global_sugar.html">
       <span class="level-badge">Level 1 · Cross-check</span>
       <span class="level-title">Confirming the big picture</span>
       <p class="level-question">"Do different methods agree on which factors matter most?"</p>
@@ -419,7 +420,7 @@
     </a>
 
     <!-- Level 2a: Month and horizon specific (SHAP) -->
-    <a class="level-card" href="Sugar/shapley_local_Sugar.html">
+    <a class="level-card" href="Sugar/shapley_local_sugar.html">
       <span class="level-badge">Level 2 · By month and horizon</span>
       <span class="level-title">What drives prices for a specific month?</span>
       <p class="level-question">"Which factors matter for the 3-month-ahead forecast made each September, and how consistent are they across years?"</p>
@@ -428,7 +429,7 @@
     </a>
 
     <!-- Level 2b: Month and horizon specific (LIME) -->
-    <a class="level-card" href="Sugar/lime_local_Sugar.html">
+    <a class="level-card" href="Sugar/lime_local_sugar.html">
       <span class="level-badge">Level 2 · Cross-check</span>
       <span class="level-title">Confirming the monthly pattern</span>
       <p class="level-question">"Does the monthly picture hold up under a different method?"</p>
@@ -437,7 +438,7 @@
     </a>
 
     <!-- Level 3: Factor specific (PDP) -->
-    <a class="level-card" href="Sugar/shapley_pdp_Sugar.html">
+    <a class="level-card" href="Sugar/shapley_pdp_sugar.html">
       <span class="level-badge">Level 3 · Single factor</span>
       <span class="level-title">How does one factor affect the forecast?</span>
       <p class="level-question">"How do changes in, say, production levels translate into changes in the price forecast?"</p>
@@ -446,7 +447,7 @@
     </a>
 
     <!-- Level 4: Case specific (interactions) -->
-    <a class="level-card" href="Sugar/interactions_Sugar.html">
+    <a class="level-card" href="Sugar/interactions_sugar.html">
       <span class="level-badge">Level 4 · Specific forecast</span>
       <span class="level-title">Why did the model predict this, for this month?</span>
       <p class="level-question">"Why did AGRICAF predict a 20% Sugar price increase in March 2022?"</p>
