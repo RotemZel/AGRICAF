@@ -22,10 +22,12 @@ The framework emphasises transparency and policy relevance, with a particular
 focus on making price forecasts and market intelligence accessible to 
 non-specialist and vulnerable stakeholders in low-income contexts.
 
-## This Repository
+## This Platform
 
 This repository presents **Stages 3 + 4** of AGRICAF: Price forecasts & explainability and 
 communication of forecasts across multiple audience levels.
+
+A comprehensive explanation of the methodology will be released shortly.
 
 ![AGRICAF Workflow](https://github.com/user-attachments/assets/a381b98b-4de1-4db5-9629-bce9c4fa77a4)
 
