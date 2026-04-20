@@ -24,7 +24,7 @@ non-specialist and vulnerable stakeholders in low-income contexts.
 
 ## This Platform
 
-This repository presents **Stages 3 + 4** of AGRICAF: Price forecasts & explainability and 
+This platform presents **Stages 3 + 4** of AGRICAF: Price forecasts & explainability and 
 communication of forecasts across multiple audience levels.
 
 A comprehensive explanation of the methodology will be released shortly.
