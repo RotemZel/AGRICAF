@@ -496,7 +496,7 @@
     <div>
       <h1>Wheat</h1>
       <p>Global prices, production levels, and the factors that move them.</p>
-      <span class="ra-badge">Forecast accuracy (RA): 0.76</span>
+      <span class="ra-badge"></span>
     </div>
   </div>
 
@@ -573,61 +573,60 @@
 
     <!-- Level 1a: Global overview (SHAP) -->
     <a class="level-card" href="Wheat/shapley_global_wheat.html">
-      <span class="level-badge">Level 1 · Overview</span>
+      <span class="level-badge">Level 1 · Global overview (Shapley) </span>
       <span class="level-title">What drives wheat prices overall?</span>
       <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
-      <p class="level-desc">A bird's-eye view showing which factors most consistently push wheat prices up or down. Covers all forecast months and horizons at once. Colours indicate the strength and direction of each factor's influence.</p>
+      <p class="level-desc">Intensity + Impact | Using Shapley values</p>
       <span class="level-arrow">Open chart →</span>
     </a>
 
     <!-- Level 1b: Global overview (LIME) -->
     <a class="level-card" href="Wheat/lime_global_wheat.html">
-      <span class="level-badge">Level 1 · Cross-check</span>
-      <span class="level-title">Confirming the big picture</span>
-      <p class="level-question">"Do different methods agree on which factors matter most?"</p>
-      <p class="level-desc">The same broad overview as above, but generated using a different analytical method. When both charts agree, you can be more confident in the result. Useful for verifying patterns seen in the overview.</p>
+      <span class="level-badge">Level 1 · Global overview (LIME)</span>
+      <span class="level-title">What drives wheat prices overall?</span>
+      <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
+      <p class="level-desc">Intensity + Impact | Using LIME</p>
       <span class="level-arrow">Open chart →</span>
     </a>
 
     <!-- Level 2a: Month and horizon specific (SHAP) -->
     <a class="level-card" href="Wheat/shapley_local_wheat.html">
-      <span class="level-badge">Level 2 · By month and horizon</span>
-      <span class="level-title">What drives prices for a specific month?</span>
-      <p class="level-question">"Which factors matter for the 3-month-ahead forecast made each September, and how consistent are they across years?"</p>
-      <p class="level-desc">Focuses on a chosen forecast month and time horizon. Shows how each factor's influence has varied from year to year, using a distribution of historical results. You can see both the typical pattern and the exceptions.</p>
+      <span class="level-badge">Level 2 · By month and horizon (Shapley)</span>
+      <span class="level-title">What drives prices for a specific month and horizon?</span>
+      <p class="level-question">"Focuses on a chosen calendar month and horizon"</p>
+      <p class="level-desc">Intensity + Impact | Using Shapley values</p>
       <span class="level-arrow">Open chart →</span>
     </a>
 
     <!-- Level 2b: Month and horizon specific (LIME) -->
     <a class="level-card" href="Wheat/lime_local_wheat.html">
-      <span class="level-badge">Level 2 · Cross-check</span>
-      <span class="level-title">Confirming the monthly pattern</span>
-      <p class="level-question">"Does the monthly picture hold up under a different method?"</p>
-      <p class="level-desc">The same month-and-horizon view as above, using a second analytical approach. Comparing the two charts helps identify which findings are robust and which may be method-specific.</p>
+      <span class="level-badge">Level 2 · By month and horizon (LIME)</span>
+      <span class="level-title">What drives prices for a specific month and horizon?</span>
+      <p class="level-question">"Focuses on a chosen calendar month and horizon"</p>
+      <p class="level-desc">Intensity + Impact | Using LIME</p>
       <span class="level-arrow">Open chart →</span>
     </a>
 
     <!-- Level 3: Factor specific (PDP) -->
     <a class="level-card" href="Wheat/shapley_pdp_wheat.html">
-      <span class="level-badge">Level 3 · Single factor</span>
+      <span class="level-badge">Level 3 · Single factor (Shapley)</span>
       <span class="level-title">How does one factor affect the forecast?</span>
-      <p class="level-question">"How do changes in, say, production levels translate into changes in the price forecast?"</p>
-      <p class="level-desc">Zooms in on a single factor to show how its value relates to its influence on the forecast. Reveals whether the relationship is simple and linear, or whether it changes at certain thresholds. Useful for understanding why a specific driver matters.</p>
+      <p class="level-question">"Zooms in on a single factor"</p>
+      <p class="level-desc">Show how its value relates to its influence on the forecast</p>
       <span class="level-arrow">Open chart →</span>
     </a>
 
-    <!-- Level 4: Interactions (clickable card that opens overlay with navigation) -->
+    <!-- Interactions (clickable card that opens overlay with navigation) -->
     <div class="level-card" onclick="openInteractions()">
       <span class="level-badge">Levels 1, 2, 4 · Interactions</span>
-      <span class="level-title">Interactions between factors</span>
-      <p class="level-question">"How do factors combine to influence the forecast?"</p>
-      <p class="level-desc">The most detailed view. Explore how pairs of factors interact and jointly influence the price forecast. Navigate through 12 different interaction charts using the controls in the expanded view.</p>
+      <span class="level-title">How do predictors react to each other</span>
+      <p class="level-question">"Do predictors identify price independently or amplify each other?"</p>
+      <p class="level-desc">Explore how pairs of factors interact and jointly influence the price forecast.</p>
       <span class="level-arrow">Open charts →</span>
     </div>
 
   </div>
 </div>
-
 <!-- ── Fullscreen overlay for interactions ── -->
 <div id="interactions-overlay" class="overlay" onclick="if(event.target===this)closeInteractions()">
   <div class="overlay-inner">
