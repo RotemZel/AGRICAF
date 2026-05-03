@@ -395,7 +395,8 @@
       border: none;
       font-size: 1.3rem;
       color: var(--muted);
-      cursor: pointer;
+      cursor:
+            cursor: pointer;
       line-height: 1;
       padding: 0.2rem 0.4rem;
       border-radius: 6px;
@@ -421,8 +422,6 @@
 
     .overlay-nav-btn {
       background: var(--cream);
-      border: 1px solid var
-            background: var(--cream);
       border: 1px solid var(--warm2);
       border-radius: 6px;
       padding: 0.4rem 0.6rem;
@@ -449,13 +448,6 @@
       background: var(--cream);
       color: var(--muted);
       border-color: var(--warm2);
-    }
-
-    .overlay-nav-indicator {
-      font-size: 0.8rem;
-      color: var(--muted);
-      min-width: 4rem;
-      text-align: center;
     }
 
     .overlay-nav-select {
@@ -508,67 +500,67 @@
     </div>
   </div>
 
-<!-- Price Forecasts -->
-<span class="section-label">Price Forecasts</span>
+  <!-- Price Forecasts -->
+  <span class="section-label">Price Forecasts</span>
 
-<div class="forecast-container">
-  <div class="forecast-card-header">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-    </svg>
-    <h3>Forecast Timeline</h3>
-  </div>
-  <p class="forecast-description">Observed prices compared to model predictions across multiple time horizons. The shaded region shows future months where outcomes are not yet known.</p>
-  
-  <div class="forecast-plot-wrapper" onclick="openForecast()">
-    <button class="expand-btn" onclick="event.stopPropagation(); openForecast()">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
-        <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-      </svg>
-      Expand
-    </button>
-    <iframe 
-      src="Wheat/forecast_wheat.html" 
-      class="forecast-iframe"
-      title="Wheat Price Forecast Chart"
-      loading="lazy">
-    </iframe>
-  </div>
-  
-  <div class="forecast-legend">
-    <div class="legend-item">
-      <span class="legend-line legend-observed"></span>
-      <span>Observed prices</span>
-    </div>
-    <div class="legend-item">
-      <span class="legend-line legend-forecast"></span>
-      <span>Best forecast</span>
-    </div>
-    <div class="legend-item">
-      <span class="legend-area"></span>
-      <span>Forecast range</span>
-    </div>
-  </div>
-</div>
-
-<!-- ── Fullscreen overlay for forecast ── -->
-<div id="forecast-overlay" class="overlay" onclick="if(event.target===this)closeForecast()">
-  <div class="overlay-inner">
-    <div class="overlay-header">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <div class="forecast-container">
+    <div class="forecast-card-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
-      <h3>Wheat · Forecast Timeline</h3>
-      <button class="overlay-close" onclick="closeForecast()">✕</button>
+      <h3>Forecast Timeline</h3>
     </div>
-    <iframe
-      id="forecast-overlay-iframe"
-      class="overlay-iframe"
-      title="Wheat Price Forecast — Full View">
-    </iframe>
+    <p class="forecast-description">Observed prices compared to model predictions across multiple time horizons. The shaded region shows future months where outcomes are not yet known.</p>
+    
+    <div class="forecast-plot-wrapper" onclick="openForecast()">
+      <button class="expand-btn" onclick="event.stopPropagation(); openForecast()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        Expand
+      </button>
+      <iframe 
+        src="Wheat/forecast_wheat.html" 
+        class="forecast-iframe"
+        title="Wheat Price Forecast Chart"
+        loading="lazy">
+      </iframe>
+    </div>
+    
+    <div class="forecast-legend">
+      <div class="legend-item">
+        <span class="legend-line legend-observed"></span>
+        <span>Observed prices</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-line legend-forecast"></span>
+        <span>Best forecast</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-area"></span>
+        <span>Forecast range</span>
+      </div>
+    </div>
   </div>
-</div>
+
+  <!-- ── Fullscreen overlay for forecast ── -->
+  <div id="forecast-overlay" class="overlay" onclick="if(event.target===this)closeForecast()">
+    <div class="overlay-inner">
+      <div class="overlay-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        <h3>Wheat · Forecast Timeline</h3>
+        <button class="overlay-close" onclick="closeForecast()">✕</button>
+      </div>
+      <iframe
+        id="forecast-overlay-iframe"
+        class="overlay-iframe"
+        title="Wheat Price Forecast — Full View">
+      </iframe>
+    </div>
+  </div>
 
   <!-- Explanation plots -->
   <span class="section-label">Understanding the Forecasts</span>
@@ -694,6 +686,8 @@
   <p>Agricultural Commodity Analysis and Forecasts</p>
   <p style="margin-top:0.25rem;">
     Rotem Zelingher · Vienna University of Economics and Business (WU) ·
+    <a href="https://github.com/RotemZel/communicate
+        Rotem Zelingher · Vienna University of Economics and Business (WU) ·
     <a href="https://github.com/RotemZel/communicate-wheat-forecasts" target="_blank">GitHub</a>
   </p>
 </footer>
@@ -709,8 +703,6 @@
   }
   
   function closeForecast() {
-    document.getElementById('forecast-overlay').classList.remove('open
-      function closeForecast() {
     document.getElementById('forecast-overlay').classList.remove('open');
     document.body.style.overflow = '';
   }
@@ -722,7 +714,7 @@
   function openInteractions() {
     const overlay = document.getElementById('interactions-overlay');
     const iframe = document.getElementById('interactions-overlay-iframe');
-    iframe.src = `Wheat/Interactions/interactions_wheat${currentInteraction}.html`;
+    iframe.src = 'Wheat/Interactions/interactions_wheat' + currentInteraction + '.html';
     updateInteractionControls();
     overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -748,7 +740,7 @@
 
   function loadCurrentInteraction() {
     const iframe = document.getElementById('interactions-overlay-iframe');
-    iframe.src = `Wheat/Interactions/interactions_wheat${currentInteraction}.html`;
+    iframe.src = 'Wheat/Interactions/interactions_wheat' + currentInteraction + '.html';
     updateInteractionControls();
   }
 
@@ -758,7 +750,7 @@
     
     // Update title
     document.getElementById('interactions-overlay-title').textContent = 
-      `Wheat · Factor Interactions (${currentInteraction} of ${totalInteractions})`;
+      'Wheat · Factor Interactions (' + currentInteraction + ' of ' + totalInteractions + ')';
     
     // Update prev/next button states
     document.getElementById('prev-btn').disabled = (currentInteraction === 1);
@@ -766,7 +758,7 @@
   }
 
   // ── Keyboard navigation ──
-  document.addEventListener('keydown', e => {
+  document.addEventListener('keydown', function(e) {
     // Escape to close overlays
     if (e.key === 'Escape') {
       closeForecast();
