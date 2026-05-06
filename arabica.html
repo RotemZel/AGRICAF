@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AGRICAF · Wheat</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cream:  #FFF8F0;
+      --warm1:  #FADEC9;
+      --warm2:  #F5C5A3;
+      --warm3:  #E8A87C;
+      --warm4:  #D4956B;
+      --warm5:  #C4845A;
+      --brown:  #3D2B1F;
+      --text:   #4A3728;
+      --muted:  #9A7B6A;
+      --shadow: rgba(61,43,31,0.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 300;
+      font-size: 1rem;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: relative;
+      z-index: 10;
+      background: white;
+      padding: 0.9rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 8px var(--shadow);
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--brown);
+      text-decoration: none;
+    }
+
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-back:hover { color: var(--brown); }
+
+    /* ── Main container ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+      animation: fadeUp 0.4s ease both;
+    }
+
+    /* ── Commodity header ── */
+    .commodity-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .commodity-emoji { font-size: 3rem; line-height: 1; flex-shrink: 0; }
+
+    .commodity-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--brown);
+      line-height: 1.15;
+    }
+
+    .commodity-header p {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+      line-height: 1.6;
+    }
+
+    .ra-badge {
+      display: inline-block;
+      background: var(--warm1);
+      border: 1px solid var(--warm3);
+      color: var(--warm5);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 0.22rem 0.7rem;
+      border-radius: 99px;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      margin-top: 3rem;
+      display: block;
+    }
+
+    /* ── Intro text ── */
+    .intro-text {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: var(--text);
+      max-width: 680px;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Level cards ── */
+    .level-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .level-card {
+      background: white;
+      border: 1px solid var(--warm2);
+      border-radius: 18px;
+      padding: 1.6rem 1.5rem 1.4rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 2px 10px var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      animation: fadeUp 0.45s ease both;
+      cursor: pointer;
+    }
+
+    .level-card:nth-child(1) { animation-delay: 0.05s; }
+    .level-card:nth-child(2) { animation-delay: 0.10s; }
+    .level-card:nth-child(3) { animation-delay: 0.15s; }
+    .level-card:nth-child(4) { animation-delay: 0.20s; }
+    .level-card:nth-child(5) { animation-delay: 0.25s; }
+    .level-card:nth-child(6) { animation-delay: 0.30s; }
+
+    .level-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      border-radius: 18px 18px 0 0;
+    }
+    .level-card:nth-child(1)::before { background: var(--warm2); }
+    .level-card:nth-child(2)::before { background: var(--warm3); }
+    .level-card:nth-child(3)::before { background: var(--warm4); }
+    .level-card:nth-child(4)::before { background: var(--warm5); }
+    .level-card:nth-child(5)::before { background: var(--warm3); }
+    .level-card:nth-child(6)::before { background: var(--warm4); }
+
+    .level-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px var(--shadow);
+      border-color: var(--warm3);
+    }
+
+    .level-badge {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--cream);
+      border: 1px solid var(--warm2);
+      border-radius: 99px;
+      padding: 0.15rem 0.5rem;
+      display: inline-block;
+      margin-bottom: 0.2rem;
+    }
+
+    .level-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--brown);
+      line-height: 1.3;
+    }
+
+    .level-question {
+      font-size: 0.88rem;
+      font-style: italic;
+      color: var(--warm5);
+      line-height: 1.5;
+    }
+
+    .level-desc {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .level-arrow {
+      font-size: 0.82rem;
+      color: var(--warm4);
+      margin-top: 0.3rem;
+      transition: transform 0.2s;
+    }
+    .level-card:hover .level-arrow { transform: translateX(4px); }
+
+    /* ── Forecast container & expand ── */
+    .forecast-container {
+      background: white;
+      border: 1px solid var(--warm2);
+      border-radius: 18px;
+      padding: 1.4rem 1.6rem 1.2rem;
+      box-shadow: 0 2px 10px var(--shadow);
+    }
+
+    .forecast-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .forecast-card-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brown);
+    }
+
+    .forecast-plot-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--cream);
+      cursor: pointer;
+    }
+
+    .forecast-iframe {
+      display: block;
+      width: 100%;
+      height: 420px;
+      border: none;
+      pointer-events: none;
+    }
+
+    .expand-btn {
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
+      background: white;
+      border: 1px solid var(--warm2);
+      border-radius: 8px;
+      padding: 0.3rem 0.55rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: background 0.2s, color 0.2s;
+      font-family: inherit;
+      z-index: 2;
+    }
+    .expand-btn:hover { background: var(--warm1); color: var(--brown); }
+
+    .forecast-description {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 1rem;
+    }
+
+    .forecast-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.9rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .legend-item { display: flex; align-items: center; gap: 0.45rem; }
+    .legend-line {
+      display: inline-block;
+      width: 28px;
+      height: 3px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .legend-observed { background: var(--brown); }
+    .legend-forecast { background: var(--warm4); }
+    .legend-area {
+      display: inline-block;
+      width: 20px;
+      height: 14px;
+      border-radius: 3px;
+      background: var(--warm1);
+      border: 1px solid var(--warm3);
+      flex-shrink: 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+      background: white;
+    }
+    footer a { color: var(--warm4); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Fullscreen overlay ── */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(61,43,31,0.55);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      animation: fadeUp 0.25s ease both;
+    }
+    .overlay.open { display: flex; }
+
+    .overlay-inner {
+      background: white;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 1200px;
+      height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(61,43,31,0.2);
+    }
+
+    .overlay-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid var(--warm1);
+      flex-shrink: 0;
+    }
+    .overlay-header h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--brown);
+      flex: 1;
+    }
+    .overlay-close {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--muted);
+      cursor:
+            cursor: pointer;
+      line-height: 1;
+      padding: 0.2rem 0.4rem;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+      font-family: inherit;
+    }
+    .overlay-close:hover { background: var(--warm1); color: var(--brown); }
+
+    .overlay-iframe {
+      flex: 1;
+      width: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ── Interactions overlay navigation ── */
+    .overlay-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-right: 1rem;
+    }
+
+    .overlay-nav-btn {
+      background: var(--cream);
+      border: 1px solid var(--warm2);
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .overlay-nav-btn:hover {
+      background: var(--warm1);
+      color: var(--brown);
+      border-color: var(--warm3);
+    }
+    .overlay-nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .overlay-nav-btn:disabled:hover {
+      background: var(--cream);
+      color: var(--muted);
+      border-color: var(--warm2);
+    }
+
+    .overlay-nav-select {
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 0.35rem 1.8rem 0.35rem 0.6rem;
+      border: 1px solid var(--warm2);
+      border-radius: 6px;
+      background: white;
+      color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239A7B6A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      transition: border-color 0.2s;
+    }
+    .overlay-nav-select:hover {
+      border-color: var(--warm3);
+    }
+    .overlay-nav-select:focus {
+      outline: none;
+      border-color: var(--warm4);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <a class="nav-brand" href="index.html">AGRICAF</a>
+  <a class="nav-back" href="index.html#commodities">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+    All commodities
+  </a>
+</nav>
+
+<!-- ── Main ── -->
+<div class="container">
+
+  <!-- Commodity header -->
+  <div class="commodity-header">
+    <span class="commodity-emoji">☕<</span>
+    <div>
+      <h1>Wheat</h1>
+      <p>Global prices, production levels, and the factors that move them.</p>
+      <span class="ra-badge"></span>
+    </div>
+  </div>
+
+  <!-- Price Forecasts -->
+  <span class="section-label">Price Forecasts</span>
+
+  <div class="forecast-container">
+    <div class="forecast-card-header">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+      <h3>Forecast Timeline</h3>
+    </div>
+    <p class="forecast-description">Observed prices compared to model predictions across multiple time horizons. The shaded region shows future months where outcomes are not yet known.</p>
+    
+    <div class="forecast-plot-wrapper" onclick="openForecast()">
+      <button class="expand-btn" onclick="event.stopPropagation(); openForecast()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        Expand
+      </button>
+      <iframe 
+        src="Arabica/forecast_arabica.html" 
+        class="forecast-iframe"
+        title="Wheat Price Forecast Chart"
+        loading="lazy">
+      </iframe>
+    </div>
+    
+    <div class="forecast-legend">
+      <div class="legend-item">
+        <span class="legend-line legend-observed"></span>
+        <span>Observed prices</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-line legend-forecast"></span>
+        <span>Best forecast</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-area"></span>
+        <span>Forecast range</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Fullscreen overlay for forecast ── -->
+  <div id="forecast-overlay" class="overlay" onclick="if(event.target===this)closeForecast()">
+    <div class="overlay-inner">
+      <div class="overlay-header">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </svg>
+        <h3>Wheat · Forecast Timeline</h3>
+        <button class="overlay-close" onclick="closeForecast()">✕</button>
+      </div>
+      <iframe
+        id="forecast-overlay-iframe"
+        class="overlay-iframe"
+        title="Wheat Price Forecast — Full View">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Explanation plots -->
+  <span class="section-label">Understanding the Forecasts</span>
+
+  <p class="intro-text">
+    Each figure below opens a detailed, interactive chart. They are organised from the broadest view down to the most specific, so you can explore at whatever level of detail suits you best.
+  </p>
+
+  <div class="level-grid">
+
+    <!-- Level 1a: Global overview (SHAP) -->
+    <a class="level-card" href="Arabica/shapley_global_arabica.html">
+      <span class="level-badge">Level 1 · Global overview (Shapley) </span>
+      <span class="level-title">What drives wheat prices overall?</span>
+      <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
+      <p class="level-desc">Intensity + Impact | Using Shapley values</p>
+      <span class="level-arrow">Open chart →</span>
+    </a>
+
+    <!-- Level 1b: Global overview (LIME) -->
+    <a class="level-card" href="Arabica/lime_global_arabica.html">
+      <span class="level-badge">Level 1 · Global overview (LIME)</span>
+      <span class="level-title">What drives wheat prices overall?</span>
+      <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
+      <p class="level-desc">Intensity + Impact | Using LIME</p>
+      <span class="level-arrow">Open chart →</span>
+    </a>
+
+    <!-- Level 2a: Month and horizon specific (SHAP) -->
+    <a class="level-card" href="Arabica/shapley_local_arabica.html">
+      <span class="level-badge">Level 2 · By month and horizon (Shapley)</span>
+      <span class="level-title">What drives prices for a specific month and horizon?</span>
+      <p class="level-question">"Focuses on a chosen calendar month and horizon"</p>
+      <p class="level-desc">Intensity + Impact | Using Shapley values</p>
+      <span class="level-arrow">Open chart →</span>
+    </a>
+
+    <!-- Level 2b: Month and horizon specific (LIME) -->
+    <a class="level-card" href="Arabica/lime_local_arabica.html">
+      <span class="level-badge">Level 2 · By month and horizon (LIME)</span>
+      <span class="level-title">What drives prices for a specific month and horizon?</span>
+      <p class="level-question">"Focuses on a chosen calendar month and horizon"</p>
+      <p class="level-desc">Intensity + Impact | Using LIME</p>
+      <span class="level-arrow">Open chart →</span>
+    </a>
+
+    <!-- Level 3: Factor specific (PDP) -->
+    <a class="level-card" href="Arabica/shapley_pdp_arabica.html">
+      <span class="level-badge">Level 3 · Single factor (Shapley)</span>
+      <span class="level-title">How does one factor affect the forecast?</span>
+      <p class="level-question">"Zooms in on a single factor"</p>
+      <p class="level-desc">Show how its value relates to its influence on the forecast</p>
+      <span class="level-arrow">Open chart →</span>
+    </a>
+
+    <!-- Interactions (clickable card that opens overlay with navigation) -->
+    <div class="level-card" onclick="openInteractions()">
+      <span class="level-badge">Levels 1, 2, 4 · Interactions</span>
+      <span class="level-title">How do predictors react to each other</span>
+      <p class="level-question">"Do predictors identify price independently or amplify each other?"</p>
+      <p class="level-desc">Explore how pairs of factors interact and jointly influence the price forecast.</p>
+      <span class="level-arrow">Open charts →</span>
+    </div>
+
+  </div>
+</div>
+<!-- ── Fullscreen overlay for interactions ── -->
+<div id="interactions-overlay" class="overlay" onclick="if(event.target===this)closeInteractions()">
+  <div class="overlay-inner">
+    <div class="overlay-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+      </svg>
+      <h3 id="interactions-overlay-title">Wheat · Factor Interactions</h3>
+      
+      <!-- Navigation controls -->
+      <div class="overlay-nav">
+        <button class="overlay-nav-btn" id="prev-btn" onclick="event.stopPropagation(); navigateInteraction(-1)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          Prev
+        </button>
+        
+        <select class="overlay-nav-select" id="interaction-select" onchange="goToInteraction(this.value)">
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+        
+        <button class="overlay-nav-btn" id="next-btn" onclick="event.stopPropagation(); navigateInteraction(1)">
+          Next
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+      
+      <button class="overlay-close" onclick="closeInteractions()">✕</button>
+    </div>
+    <iframe
+      id="interactions-overlay-iframe"
+      class="overlay-iframe"
+      title="Wheat Factor Interactions — Full View">
+    </iframe>
+  </div>
+</div>
+
+<!-- ── Footer ── -->
+<footer>
+  <p style="font-family:'Playfair Display',serif; font-weight:700; color:var(--brown); margin-bottom:0.25rem;">AGRICAF</p>
+  <p>Agricultural Commodity Analysis and Forecasts</p>
+  <p style="margin-top:0.25rem;">
+    Rotem Zelingher · Vienna University of Economics and Business (WU) ·
+    <a href="https://github.com/RotemZel/communicate
+        Rotem Zelingher · Vienna University of Economics and Business (WU) ·
+    <a href="https://github.com/RotemZel/communicate-wheat-forecasts" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+<script>
+  // ── Forecast overlay functions ──
+  function openForecast() {
+    const overlay = document.getElementById('forecast-overlay');
+    const iframe = document.getElementById('forecast-overlay-iframe');
+    if (!iframe.src) iframe.src = 'Arabica/forecast_arabica.html';
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeForecast() {
+    document.getElementById('forecast-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── Interactions overlay functions ──
+  let currentInteraction = 1;
+  const totalInteractions = 12;
+
+  function openInteractions() {
+    const overlay = document.getElementById('interactions-overlay');
+    const iframe = document.getElementById('interactions-overlay-iframe');
+    iframe.src = 'Arabica/Interactions/interactions_arabica' + currentInteraction + '.html';
+    updateInteractionControls();
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeInteractions() {
+    document.getElementById('interactions-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function navigateInteraction(direction) {
+    const newIndex = currentInteraction + direction;
+    if (newIndex >= 1 && newIndex <= totalInteractions) {
+      currentInteraction = newIndex;
+      loadCurrentInteraction();
+    }
+  }
+
+  function goToInteraction(value) {
+    currentInteraction = parseInt(value);
+    loadCurrentInteraction();
+  }
+
+  function loadCurrentInteraction() {
+    const iframe = document.getElementById('interactions-overlay-iframe');
+    iframe.src = 'Arabica/Interactions/interactions_arabica' + currentInteraction + '.html';
+    updateInteractionControls();
+  }
+
+  function updateInteractionControls() {
+    // Update select dropdown
+    document.getElementById('interaction-select').value = currentInteraction;
+    
+    // Update title
+    document.getElementById('interactions-overlay-title').textContent = 
+      'Wheat · Factor Interactions (' + currentInteraction + ' of ' + totalInteractions + ')';
+    
+    // Update prev/next button states
+    document.getElementById('prev-btn').disabled = (currentInteraction === 1);
+    document.getElementById('next-btn').disabled = (currentInteraction === totalInteractions);
+  }
+
+  // ── Keyboard navigation ──
+  document.addEventListener('keydown', function(e) {
+    // Escape to close overlays
+    if (e.key === 'Escape') {
+      closeForecast();
+      closeInteractions();
+    }
+    
+    // Arrow keys for interactions navigation when overlay is open
+    if (document.getElementById('interactions-overlay').classList.contains('open')) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        navigateInteraction(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        navigateInteraction(-1);
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
