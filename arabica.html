@@ -523,7 +523,7 @@
       <iframe 
         src="Arabica/forecast_arabica.html" 
         class="forecast-iframe"
-        title="Wheat Price Forecast Chart"
+        title="ArabicaPrice Forecast Chart"
         loading="lazy">
       </iframe>
     </div>
@@ -551,13 +551,13 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D4956B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
-        <h3>Wheat · Forecast Timeline</h3>
+        <h3>Arabica· Forecast Timeline</h3>
         <button class="overlay-close" onclick="closeForecast()">✕</button>
       </div>
       <iframe
         id="forecast-overlay-iframe"
         class="overlay-iframe"
-        title="Wheat Price Forecast — Full View">
+        title="ArabicaPrice Forecast — Full View">
       </iframe>
     </div>
   </div>
@@ -574,7 +574,7 @@
     <!-- Level 1a: Global overview (SHAP) -->
     <a class="level-card" href="Arabica/shapley_global_arabica.html">
       <span class="level-badge">Level 1 · Global overview (Shapley) </span>
-      <span class="level-title">What drives wheat prices overall?</span>
+      <span class="level-title">What drives Arabicaprices overall?</span>
       <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
       <p class="level-desc">Intensity + Impact | Using Shapley values</p>
       <span class="level-arrow">Open chart →</span>
@@ -583,7 +583,7 @@
     <!-- Level 1b: Global overview (LIME) -->
     <a class="level-card" href="Arabica/lime_global_arabica.html">
       <span class="level-badge">Level 1 · Global overview (LIME)</span>
-      <span class="level-title">What drives wheat prices overall?</span>
+      <span class="level-title">What drives Arabicaprices overall?</span>
       <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
       <p class="level-desc">Intensity + Impact | Using LIME</p>
       <span class="level-arrow">Open chart →</span>
@@ -635,7 +635,7 @@
         <circle cx="12" cy="12" r="3"/>
         <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
       </svg>
-      <h3 id="interactions-overlay-title">Wheat · Factor Interactions</h3>
+      <h3 id="interactions-overlay-title">Arabica· Factor Interactions</h3>
       
       <!-- Navigation controls -->
       <div class="overlay-nav">
@@ -674,7 +674,7 @@
     <iframe
       id="interactions-overlay-iframe"
       class="overlay-iframe"
-      title="Wheat Factor Interactions — Full View">
+      title="ArabicaFactor Interactions — Full View">
     </iframe>
   </div>
 </div>
@@ -749,7 +749,7 @@
     
     // Update title
     document.getElementById('interactions-overlay-title').textContent = 
-      'Wheat · Factor Interactions (' + currentInteraction + ' of ' + totalInteractions + ')';
+      'Arabica· Factor Interactions (' + currentInteraction + ' of ' + totalInteractions + ')';
     
     // Update prev/next button states
     document.getElementById('prev-btn').disabled = (currentInteraction === 1);
