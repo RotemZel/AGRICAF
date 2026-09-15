@@ -671,6 +671,10 @@
 </footer>
 
 <script>
+  // Both overlays are anchored to the viewport, so they are moved out of the
+  // page container and onto the body before either can be opened.
+  document.querySelectorAll('.overlay').forEach(function (o) { document.body.appendChild(o); });
+
   // ── Forecast overlay functions ──
   function openForecast() {
     const overlay = document.getElementById('forecast-overlay');
