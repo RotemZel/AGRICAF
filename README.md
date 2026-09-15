@@ -2,7 +2,7 @@
 
 ## About
 
-Hi! I'm **Rotem Zelingher**, an applied economist specialising in time series 
+Hi! I'm **Rotem Zelingher**, an agricultural economist specialising in time series 
 forecasting, machine learning, and statistical inference. I develop open, 
 interpretable frameworks that combine econometric theory with machine learning 
 for robust price prediction.
