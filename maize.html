@@ -17,6 +17,9 @@
       --text:   #4A3728;
       --muted:  #9A7B6A;
       --shadow: rgba(61,43,31,0.10);
+      --volat-middle:  #FFD700;
+      --volat-high:    #CD3333;
+      --volat-extreme: #993333;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -329,6 +332,10 @@
       border: 1px solid var(--warm3);
       flex-shrink: 0;
     }
+    .legend-group { display: flex; align-items: center; gap: 0.6rem; }
+    .legend-middle  { background: repeating-linear-gradient(to right, var(--volat-middle)  0 7px, transparent 7px 11px); }
+    .legend-high    { background: repeating-linear-gradient(to right, var(--volat-high)    0 7px, transparent 7px 11px); }
+    .legend-extreme { background: repeating-linear-gradient(to right, var(--volat-extreme) 0 7px, transparent 7px 11px); }
 
     /* ── Footer ── */
     footer {
@@ -539,6 +546,21 @@
       <div class="legend-item">
         <span class="legend-area"></span>
         <span>Forecast range</span>
+      </div>
+      <div class="legend-group">
+        <span>Volatility scenario:</span>
+        <div class="legend-item">
+          <span class="legend-line legend-middle"></span>
+          <span>middle</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-line legend-high"></span>
+          <span>high</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-line legend-extreme"></span>
+          <span>extreme</span>
+        </div>
       </div>
     </div>
   </div>
