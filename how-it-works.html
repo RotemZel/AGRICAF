@@ -92,15 +92,16 @@
     nav .back { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
     nav .back:hover { color: var(--brown); }
 
-    /* Page column: title, summary card, stage grid, workflow figure */
+    /* Page column: title, summary card, workflow figure */
     main { max-width: var(--content-width); margin: 0 auto; padding: 4rem 1.5rem 6rem; animation: fadeUp var(--fade) ease both; }
     main h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin-bottom: 2rem; }
     h1 em { color: var(--warm4); }
     .summary { font-size: 1.05rem; line-height: 1.9; border-left: 4px solid var(--warm3); padding: 1.8rem 2rem; margin-bottom: 3rem; }
-    main > .grid { margin-bottom: 3.5rem; }
+    /* The chart fills the column and opens full size on click, since its own
+       text is finer than anything else on the page. */
     .workflow { text-align: center; }
     .workflow .label { margin-bottom: 1.2rem; }
-    .workflow img { width: 100%; max-width: 700px; border-radius: var(--radius); border: 1px solid var(--warm2); box-shadow: 0 4px 20px var(--shadow); }
+    .workflow img { width: 100%; border-radius: var(--radius); border: 1px solid var(--warm2); box-shadow: 0 4px 20px var(--shadow); }
 
     /* Footer */
     footer { text-align: center; padding: 2rem; font-size: 0.88rem; color: var(--muted); background: white; }
@@ -125,44 +126,22 @@
   <h1>How <em>AGRICAF</em> Works</h1>
 
   <p class="card summary">
-    AGRICAF is a four-stage process that turns raw, publicly available data into price forecasts with plain-language explanations. It starts by collecting and harmonising information from many sources, including trade statistics, production figures, stock reports, and monthly price histories. A screening step then identifies which of those sources actually help predict prices for each commodity, season, and time horizon, discarding the rest so the model is not misled by noise. The forecasting stage runs fifteen statistical and machine learning methods against each other for every commodity, month and horizon, and publishes the one with the lowest past error under its own name, with a band around it showing how wrong that method has been before. Every choice along the way, which factors to keep and which method to trust, is made using earlier years only, so the accuracy on record is the accuracy the procedure would really have delivered at the time. Finally, every forecast is accompanied by an explanation: which factors pushed the price up or down, by how much, and how that compares to historical patterns. These explanations are presented at four levels of detail, from a broad annual overview to a forensic breakdown of a single forecast, so that the results are useful whether you are a policymaker, a researcher, or a market practitioner.
+    AGRICAF is a five-stage process that turns raw, publicly available data into price forecasts with plain-language explanations. It starts by collecting and harmonising information from many sources, including trade statistics, production figures, stock reports, and monthly price histories. A screening step then identifies which of those sources actually help predict prices for each commodity, season, and time horizon, discarding the rest so the model is not misled by noise. The forecasting stage runs fifteen statistical and machine learning methods against each other for every commodity, month and horizon, and publishes the one with the lowest past error under its own name, with a band around it showing how wrong that method has been before. Every choice along the way, which factors to keep and which method to trust, is made using earlier years only, so the accuracy on record is the accuracy the procedure would really have delivered at the time. Finally, every forecast is accompanied by an explanation: which factors pushed the price up or down, by how much, and how that compares to historical patterns. These explanations are presented at four levels of detail, from a broad annual overview to a forensic breakdown of a single forecast, so that the results are useful whether you are a policymaker, a researcher, or a market practitioner.
   </p>
-
-  <!-- The four stages -->
-  <div class="grid" style="--min: 170px">
-    <div class="card" style="--stripe: var(--warm2)">
-      <span class="label">Stage 1</span>
-      <h3>Gathering the Data</h3>
-      <p>Prices, production, stocks, and trade statistics are collected and aligned into a consistent timeline. Each annual figure enters only once its marketing year has begun.</p>
-    </div>
-    <div class="card" style="--stripe: var(--warm3)">
-      <span class="label">Stage 2</span>
-      <h3>Selecting What Matters</h3>
-      <p>Model families compete on the same years. The winner's ranking decides which of dozens of candidate factors survive into three progressively tighter shortlists.</p>
-    </div>
-    <div class="card" style="--stripe: var(--warm4)">
-      <span class="label">Stage 3</span>
-      <h3>Generating Forecasts</h3>
-      <p>Fifteen models are tested on historical data, including two naive benchmarks. The one with the lowest past error for each month and horizon is published under its own name, with an 80% band.</p>
-    </div>
-    <div class="card" style="--stripe: var(--warm5)">
-      <span class="label">Stage 4</span>
-      <h3>Explaining the Results</h3>
-      <p>Each forecast comes with a breakdown of which factors drove it, at four levels of detail from broad to specific.</p>
-    </div>
-  </div>
 
   <!-- Workflow figure -->
   <figure class="workflow">
     <figcaption class="label">AGRICAF Pipeline · Overview</figcaption>
-    <img src="https://github.com/user-attachments/assets/a381b98b-4de1-4db5-9629-bce9c4fa77a4" alt="AGRICAF four-stage workflow chart"/>
+    <a href="workflow_chart.png" target="_blank" rel="noopener">
+      <img src="workflow_chart.png" alt="The five stages of AGRICAF: data assembly, model comparison, forecasting, publication and explanation"/>
+    </a>
   </figure>
 </main>
 
 <footer>
   <p class="brand">AGRICAF</p>
   <p>Agricultural Commodity Analysis and Forecasts</p>
-  <p>Rotem Zelingher · Vienna University of Economics and Business (WU) · <a href="https://github.com/RotemZel/communicate-wheat-forecasts" target="_blank" rel="noopener">GitHub</a></p>
+  <p>Rotem Zelingher · Austrian Institute of Economic Research (WIFO) · <a href="https://github.com/RotemZel/communicate-wheat-forecasts" target="_blank" rel="noopener">GitHub</a></p>
 </footer>
 
 </body>
