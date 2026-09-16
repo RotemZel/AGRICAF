@@ -6,38 +6,44 @@
   <title>AGRICAF · Agricultural Commodity Forecasts</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
+    /* Settings: the colours, fonts and sizes the whole page is built from */
     :root {
-      --cream:  #FFF8F0;
-      --warm1:  #FADEC9;
-      --warm2:  #F5C5A3;
-      --warm3:  #E8A87C;
-      --warm4:  #D4956B;
-      --warm5:  #C4845A;
-      --brown:  #3D2B1F;
-      --text:   #4A3728;
-      --muted:  #9A7B6A;
-      --shadow: rgba(61,43,31,0.10);
+      --cream:  #FFF8F0;                      /* page background */
+      --warm1:  #FADEC9;                      /* soft fills: gradients, pills, hover backgrounds */
+      --warm2:  #F5C5A3;                      /* borders of cards and controls */
+      --warm3:  #E8A87C;                      /* borders of tags and hovered cards, quote bars */
+      --warm4:  #D4956B;                      /* main accent: buttons, links, tags */
+      --warm5:  #C4845A;                      /* pressed accent and pill text */
+      --brown:  #3D2B1F;                      /* headings */
+      --text:   #4A3728;                      /* body text */
+      --muted:  #9A7B6A;                      /* secondary text */
+      --shadow: rgba(61, 43, 31, 0.10);       /* shadow colour under cards */
+      --serif:  'Playfair Display', serif;    /* headings */
+      --sans:   'Source Sans 3', sans-serif;  /* everything else */
+      --radius: 18px;                         /* corner radius of cards and dialogs */
+      --content-width: 960px;                 /* widest column of page content */
+      --chart-height: 340px;                  /* height of each forecast chart tile */
+      --fade: 0.4s;                           /* duration of the fade-in when a block appears */
+      --stagger: 0.05s;                       /* extra fade-in delay per card in a grid */
     }
 
+    /* Base: box model, body text, a faint paper grain under everything, no page scroll while a dialog is open */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--cream);
-      color: var(--text);
-      font-family: 'Source Sans 3', sans-serif;
-      font-weight: 300;
-      font-size: 1rem;
-      min-height: 100vh;
-    }
-
+    body { background: var(--cream); color: var(--text); font-family: var(--sans); font-weight: 300; min-height: 100vh; }
     body::before {
       content: '';
-      position: fixed; inset: 0;
+      position: fixed; inset: 0; z-index: -1;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 0;
+    }
+    body:has(dialog[open]) { overflow: hidden; }
+    h1, h2, h3 { font-family: var(--serif); font-weight: 700; color: var(--brown); line-height: 1.2; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* Labels: a bordered uppercase tag and a filled pill */
     .tag {
       display: inline-block;
       font-size: 0.75rem;
@@ -50,213 +56,8 @@
       padding: 0.28rem 0.9rem;
       margin-bottom: 1.2rem;
     }
-
-    /* ── Header ── */
-    header {
-      position: relative;
-      z-index: 1;
-      padding: 4.5rem 2rem 3.5rem;
-      text-align: center;
-      background: linear-gradient(160deg, var(--warm1) 0%, var(--cream) 65%);
-    }
-
-    .brain-word {
-      position: relative;
+    .pill {
       display: inline-block;
-    }
-
-    .brain-bg {
-      position: absolute;
-      font-size: 3.8rem;
-      opacity: 0.13;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -55%) rotate(-15deg);
-      pointer-events: none;
-      user-select: none;
-      z-index: 0;
-    }
-
-    .brain-word em {
-      position: relative;
-      z-index: 1;
-      font-style: italic;
-      color: var(--warm4);
-    }
-
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 700;
-      color: var(--brown);
-      line-height: 1.15;
-      margin-bottom: 0.8rem;
-    }
-
-    .subtitle {
-      font-size: 1.05rem;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    /* ── CTA Buttons ── */
-    .cta-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 2.2rem;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: var(--warm4);
-      color: var(--cream);
-      padding: 0.85rem 2rem;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 1rem;
-      text-decoration: none;
-      box-shadow: 0 2px 14px var(--shadow);
-      transition: background 0.2s, transform 0.15s;
-      border: none;
-    }
-    .btn-primary:hover { background: var(--warm5); transform: translateY(-2px); }
-
-    .btn-why {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: transparent;
-      color: var(--text);
-      padding: 0.85rem 2rem;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 1rem;
-      text-decoration: none;
-      border: 1.5px solid var(--warm3);
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.2s, border-color 0.2s, transform 0.15s;
-    }
-    .btn-why:hover { background: var(--warm1); border-color: var(--warm4); transform: translateY(-2px); }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: transparent;
-      color: var(--text);
-      padding: 0.85rem 2rem;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 1rem;
-      text-decoration: none;
-      border: 1.5px solid var(--warm3);
-      transition: background 0.2s, border-color 0.2s, transform 0.15s;
-    }
-    .btn-secondary:hover { background: var(--warm1); border-color: var(--warm4); transform: translateY(-2px); }
-
-    /* ── Modal ── */
-    .modal-overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(61,43,31,0.40);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-      backdrop-filter: blur(4px);
-    }
-    .modal-overlay.open { display: flex; }
-
-    .modal {
-      background: var(--cream);
-      border: 1px solid var(--warm2);
-      border-radius: 20px;
-      max-width: 680px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 2.4rem 2.4rem 2rem;
-      position: relative;
-      animation: fadeUp 0.3s ease both;
-      box-shadow: 0 24px 60px rgba(61,43,31,0.16);
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 1rem; right: 1.2rem;
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      color: var(--muted);
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .modal-close:hover { color: var(--brown); }
-
-    .modal-tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--warm4);
-      border: 1px solid var(--warm3);
-      border-radius: 20px;
-      padding: 0.22rem 0.8rem;
-      margin-bottom: 1rem;
-    }
-
-    .modal h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--brown);
-      margin-bottom: 1.2rem;
-      line-height: 1.25;
-    }
-
-    .modal-body p {
-      font-size: 1rem;
-      line-height: 1.8;
-      color: var(--text);
-      margin-bottom: 0.9rem;
-    }
-
-    .modal-body h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--brown);
-      margin: 1.5rem 0 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .modal-pullquote {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.05rem;
-      color: var(--brown);
-      border-left: 3px solid var(--warm3);
-      padding-left: 1rem;
-      margin: 1.2rem 0;
-    }
-
-    .modal-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 1.2rem;
-    }
-
-    .modal-pill {
       font-size: 0.8rem;
       font-weight: 600;
       color: var(--warm5);
@@ -264,511 +65,318 @@
       border: 1px solid var(--warm2);
       border-radius: 99px;
       padding: 0.28rem 0.85rem;
+      white-space: nowrap;
     }
 
-    /* ── Section wrapper ── */
-    .section-wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem;
+    /* Buttons: a filled primary, an outlined secondary, and a bare close cross */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.85rem 2rem;
+      border-radius: 30px;
+      font: 600 1rem var(--sans);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
     }
-
-    .section-header { text-align: center; margin-bottom: 2.2rem; }
-
-    h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.5rem, 3vw, 2.1rem);
-      font-weight: 700;
-      color: var(--brown);
-      margin-bottom: 0.4rem;
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--warm4); color: var(--cream); border: none; box-shadow: 0 2px 14px var(--shadow); }
+    .btn-primary:hover, .btn-primary[aria-expanded="true"] { background: var(--warm5); }
+    .btn-outline { background: transparent; color: var(--text); border: 1.5px solid var(--warm3); }
+    .btn-outline:hover { background: var(--warm1); border-color: var(--warm4); }
+    .close {
+      background: none;
+      border: none;
+      border-radius: 6px;
+      padding: 0.2rem 0.4rem;
+      font-size: 1.3rem;
+      line-height: 1;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
     }
+    .close:hover { background: var(--warm1); color: var(--brown); }
 
-    .section-sub { font-size: 0.95rem; color: var(--muted); }
-
-    /* ── Commodity cards ── */
-    .commodity-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
-      gap: 1.1rem;
-    }
-
-    .commodity-card {
+    /* Cards: a white box. Inside a grid a card stacks its content, fades in after the card before it,
+       and shows the colour set in --stripe on the card as a top stripe */
+    .card {
       background: white;
       border: 1px solid var(--warm2);
-      border-radius: 18px;
-      padding: 1.5rem 1.3rem 1.3rem;
-      text-decoration: none;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px var(--shadow);
       color: inherit;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
+      font: inherit;
+      text-align: left;
+      text-decoration: none;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr));
+      gap: 1.2rem;
+    }
+    .grid > .card {
       position: relative;
       overflow: hidden;
-      box-shadow: 0 2px 10px var(--shadow);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-      animation: fadeUp 0.45s ease both;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      padding: 1.5rem 1.4rem 1.3rem;
+      animation: fadeUp var(--fade) ease both;
     }
+    .grid > .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--stripe, transparent); }
+    .grid > .card:nth-child(1) { animation-delay: calc(1 * var(--stagger)); }
+    .grid > .card:nth-child(2) { animation-delay: calc(2 * var(--stagger)); }
+    .grid > .card:nth-child(3) { animation-delay: calc(3 * var(--stagger)); }
+    .grid > .card:nth-child(4) { animation-delay: calc(4 * var(--stagger)); }
+    .grid > .card:nth-child(5) { animation-delay: calc(5 * var(--stagger)); }
+    .grid > .card:nth-child(6) { animation-delay: calc(6 * var(--stagger)); }
+    .card h3 { font-size: 1rem; }
+    .card p { font-size: 0.88rem; color: var(--muted); line-height: 1.55; flex: 1; }
+    .card .emoji { font-size: 1.8rem; line-height: 1; margin-bottom: 0.3rem; }
+    .card .arrow { font-size: 0.82rem; color: var(--warm4); margin-top: 0.3rem; transition: transform 0.2s; }
+    :is(a, button).card { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+    :is(a, button).card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px var(--shadow); border-color: var(--warm3); }
+    :is(a, button).card:hover .arrow { transform: translateX(4px); }
 
-    .commodity-card:nth-child(1) { animation-delay: 0.05s; }
-    .commodity-card:nth-child(2) { animation-delay: 0.10s; }
-    .commodity-card:nth-child(3) { animation-delay: 0.15s; }
-    .commodity-card:nth-child(4) { animation-delay: 0.20s; }
-    .commodity-card:nth-child(5) { animation-delay: 0.25s; }
-
-    .commodity-card.active:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px var(--shadow);
-      border-color: var(--warm3);
-    }
-
-    .commodity-card.inactive { opacity: 0.65; cursor: default; }
-
-    .commodity-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      border-radius: 18px 18px 0 0;
-    }
-    .commodity-card:nth-child(1)::before { background: var(--warm3); }
-    .commodity-card:nth-child(2)::before { background: var(--warm2); }
-    .commodity-card:nth-child(3)::before { background: var(--warm4); }
-    .commodity-card:nth-child(4)::before { background: var(--warm5); }
-    .commodity-card:nth-child(5)::before { background: var(--warm1); }
-
-    .commodity-emoji { font-size: 1.8rem; line-height: 1; margin-bottom: 0.3rem; }
-
-    .commodity-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--brown);
-    }
-
-    .commodity-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.55; flex: 1; }
-
-    .commodity-arrow { font-size: 0.82rem; color: var(--warm4); margin-top: 0.3rem; transition: transform 0.2s; }
-    .commodity-card.active:hover .commodity-arrow { transform: translateX(4px); }
-
-    .coming-soon {
-      position: absolute;
-      top: 0.75rem; right: 0.75rem;
-      font-size: 0.58rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      background: var(--cream);
+    /* Dialog: a centred box over the blurred page; the backdrop click and Escape close it */
+    dialog {
+      width: min(680px, 100% - 3rem);
+      padding: 0;
       border: 1px solid var(--warm2);
-      border-radius: 20px;
-      padding: 0.12rem 0.4rem;
+      border-radius: var(--radius);
+      background: var(--cream);
+      color: inherit;
+      box-shadow: 0 24px 60px rgba(61, 43, 31, 0.16);
+      overflow: hidden;
+      animation: fadeUp 0.3s ease both;
     }
-
-    /* ── About ── */
-    .about {
-      position: relative;
-      z-index: 1;
-      background: linear-gradient(135deg, var(--warm1) 0%, var(--cream) 100%);
-      padding: 3rem 2rem;
-    }
-
-    .about-inner { max-width: 720px; margin: 0 auto; }
-    .about .tag { margin-bottom: 0.8rem; }
-
-    .about h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      font-weight: 700;
-      color: var(--brown);
-      margin-bottom: 1.2rem;
-    }
-
-    .about-text p {
-      font-size: 1rem;
-      line-height: 1.8;
-      color: var(--text);
-      margin-bottom: 0.9rem;
-    }
-
-    .about-belief {
-      font-family: 'Playfair Display', serif;
+    dialog::backdrop { background: rgba(61, 43, 31, 0.40); backdrop-filter: blur(4px); }
+    dialog > .close { position: absolute; top: 1rem; right: 1.2rem; }
+    .dialog-body { max-height: 85vh; overflow-y: auto; padding: 2.4rem 2.4rem 2rem; }
+    .dialog-body h2 { font-size: 1.6rem; margin-bottom: 1.2rem; }
+    .dialog-body h3, .about h3 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.5rem 0 0.5rem; }
+    .dialog-body p, .about p { font-size: 1rem; line-height: 1.8; margin-bottom: 0.9rem; }
+    .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; }
+    blockquote {
+      font-family: var(--serif);
       font-style: italic;
-      font-size: 1.08rem !important;
-      color: var(--brown) !important;
+      font-size: 1.08rem;
+      line-height: 1.8;
+      color: var(--brown);
       border-left: 3px solid var(--warm3);
       padding-left: 1rem;
-      margin: 1.4rem 0 !important;
+      margin: 1.3rem 0;
     }
 
-    .about-contact {
+    /* Title block */
+    header {
+      padding: 4.5rem 2rem 3.5rem;
+      text-align: center;
+      background: linear-gradient(160deg, var(--warm1) 0%, var(--cream) 65%);
+    }
+    header h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.15; margin-bottom: 0.8rem; }
+    .tagline { font-size: 1.1rem; font-style: italic; color: var(--warm4); margin-bottom: 0.6rem; }
+    .subtitle { font-size: 1.05rem; line-height: 1.7; color: var(--muted); max-width: 520px; margin: 0 auto; }
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 2.2rem; }
+
+    /* Forecast panel: one chart tile per commodity, hidden until the header button
+       shows it. Each plot carries its own title and legend, so a tile adds only
+       the crop's name and its accuracy. */
+    .panel { max-width: var(--content-width); margin: 2.5rem auto 0; padding: 0 1.5rem; animation: fadeUp 0.35s ease both; }
+    .grid > .tile { padding: 0; gap: 0; }
+    .tile h3 { display: flex; align-items: center; gap: 0.55rem; font-size: 0.95rem; padding: 1rem 1.2rem 0.75rem; border-bottom: 1px solid var(--warm1); }
+    .tile .pill { margin-left: auto; font-size: 0.7rem; letter-spacing: 0.06em; padding: 0.15rem 0.55rem; border-color: var(--warm3); }
+    .tile iframe { display: block; width: 100%; height: var(--chart-height); border: none; }
+
+    /* Commodity section: a centred heading over the card grid */
+    .wrap { max-width: var(--content-width); margin: 0 auto; padding: 3rem 1.5rem; }
+    .centered { text-align: center; margin-bottom: 2.2rem; }
+    .centered h2 { font-size: clamp(1.5rem, 3vw, 2.1rem); margin-bottom: 0.4rem; }
+    .sub { font-size: 0.95rem; color: var(--muted); }
+
+    /* About band */
+    .about { background: linear-gradient(135deg, var(--warm1) 0%, var(--cream) 100%); padding: 3rem 2rem; }
+    .about > div { max-width: 720px; margin: 0 auto; }
+    .about .tag { margin-bottom: 0.8rem; }
+    .about h2 { font-size: clamp(1.4rem, 3vw, 2rem); margin-bottom: 1.2rem; }
+    .contact {
       display: inline-block;
       margin-top: 0.4rem;
+      padding-bottom: 2px;
       font-size: 0.95rem;
       font-weight: 600;
       color: var(--warm4);
       text-decoration: none;
       border-bottom: 1px solid var(--warm3);
-      padding-bottom: 2px;
       transition: color 0.2s;
     }
-    .about-contact:hover { color: var(--brown); }
+    .contact:hover { color: var(--brown); }
+    .about img { height: 20px; margin-top: 0.5rem; }
 
-    .about h3 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--brown);
-      margin: 1.6rem 0 0.5rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .about-meta { margin-top: 1.4rem; }
-    .about-meta img { height: 20px; }
-
-    /* ── Footer ── */
-    footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.88rem;
-      color: var(--muted);
-      background: white;
-    }
+    /* Footer */
+    footer { text-align: center; padding: 2rem; font-size: 0.88rem; color: var(--muted); background: white; }
+    footer p + p { margin-top: 0.25rem; }
     footer a { color: var(--warm4); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── Forecast panel ── */
-    #forecast-panel {
-      display: none;
-      max-width: 960px;
-      margin: 2.5rem auto 0;
-      padding: 0 1.5rem;
-      animation: fadeUp 0.35s ease both;
-    }
-    #forecast-panel.open { display: block; }
-
-    .forecast-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.2rem;
-    }
-    @media (max-width: 680px) {
-      .forecast-grid { grid-template-columns: 1fr; }
-    }
-
-    .forecast-tile {
-      background: white;
-      border: 1px solid var(--warm2);
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 2px 10px var(--shadow);
-    }
-
-    .forecast-tile-header {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      padding: 1rem 1.2rem 0.75rem;
-      border-bottom: 1px solid var(--warm1);
-    }
-    .forecast-tile-header span {
-      font-family: 'Playfair Display', serif;
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--brown);
-    }
-    .tile-emoji { font-size: 1.1rem; }
-    .tile-ra {
-      margin-left: auto;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      color: var(--warm5);
-      background: var(--warm1);
-      border: 1px solid var(--warm3);
-      border-radius: 99px;
-      padding: 0.15rem 0.55rem;
-      white-space: nowrap;
-    }
-    .forecast-tile iframe {
-      display: block;
-      width: 100%;
-      height: 340px;
-      border: none;
-    }
-    .forecast-legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      padding: 0.65rem 1.2rem 0.85rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-      border-top: 1px solid var(--warm1);
-    }
-    .legend-item { display: flex; align-items: center; gap: 0.4rem; }
-    .legend-line {
-      display: inline-block;
-      width: 22px;
-      height: 3px;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-    .legend-observed { background: var(--brown); }
-    .legend-forecast { background: var(--warm4); }
-    .legend-area-swatch {
-      display: inline-block;
-      width: 16px;
-      height: 12px;
-      border-radius: 3px;
-      background: var(--warm1);
-      border: 1px solid var(--warm3);
-      flex-shrink: 0;
-    }
-
-    .btn-primary.active { background: var(--warm5); }
+    .brand { font-family: var(--serif); font-weight: 700; color: var(--brown); text-decoration: none; }
   </style>
 </head>
 <body>
 
-<!-- ── Header ── -->
 <header>
-  <div class="tag">AGRICAF · Agricultural Commodity Forecasting</div>
-  <h1>AGRICAF</h1> 
-  <em>An Open Forecast Intelligence Tool</em></h1>
+  <span class="tag">AGRICAF · Agricultural Commodity Forecasting</span>
+  <h1>AGRICAF</h1>
+  <p class="tagline">An Open Forecast Intelligence Tool</p>
   <p class="subtitle">
     Price forecasts for global agricultural commodities, with clear explanations of what is driving each prediction.
     Monthly, up to one year ahead.
   </p>
-  <div class="cta-buttons">
-    <button class="btn-primary" id="forecast-toggle" onclick="toggleForecasts(this)">📈 View Forecasts</button>
-    <button class="btn-why" onclick="document.getElementById('whyModal').classList.add('open')">💡 Why AGRICAF?</button>
-    <a class="btn-secondary" href="how-it-works.html">ℹ️ How It Works</a>
+  <div class="actions">
+    <button class="btn btn-primary" aria-expanded="false" aria-controls="forecastPanel"
+            onclick="forecastPanel.hidden = !forecastPanel.hidden;
+                     this.setAttribute('aria-expanded', !forecastPanel.hidden);
+                     this.textContent = forecastPanel.hidden ? '📈 View Forecasts' : '📈 Hide Forecasts';
+                     forecastPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });">📈 View Forecasts</button>
+    <button class="btn btn-outline" onclick="whyDialog.showModal()">💡 Why AGRICAF?</button>
+    <a class="btn btn-outline" href="how-it-works.html">ℹ️ How It Works</a>
   </div>
 </header>
 
-<!-- ── Forecast panel ── -->
-<div id="forecast-panel">
-  <div class="forecast-grid">
+<!-- Forecast panel: one chart tile per commodity -->
+<div id="forecastPanel" class="panel" hidden>
+  <div class="grid" style="--min: 320px">
 
-    <div class="forecast-tile">
-      <div class="forecast-tile-header">
-        <span class="tile-emoji">🌾</span>
-        <span>Wheat</span>
-        <span class="tile-ra">RA: 0.74</span>
-      </div>
-      <iframe src="Wheat/forecast_wheat.html" title="Wheat Price Forecast" loading="lazy"></iframe>
-      <div class="forecast-legend">
-        <div class="legend-item"><span class="legend-line legend-observed"></span>Observed</div>
-        <div class="legend-item"><span class="legend-line legend-forecast"></span>Forecast</div>
-        <div class="legend-item"><span class="legend-area-swatch"></span>Range</div>
-      </div>
+    <div class="card tile">
+      <h3>🌾 Wheat <span class="pill">Direction 73%</span></h3>
+      <iframe src="Wheat/forecast_wheat.html" title="Wheat price forecast" loading="lazy"></iframe>
     </div>
-    
-    <div class="forecast-tile">
-      <div class="forecast-tile-header">
-        <span class="tile-emoji">🌽</span>
-        <span>Maize</span>
-        <span class="tile-ra">RA: 0.71</span>
-      </div>
-      <iframe src="Maize/forecast_maize.html" title="Maize Price Forecast" loading="lazy"></iframe>
-      <div class="forecast-legend">
-        <div class="legend-item"><span class="legend-line legend-observed"></span>Observed</div>
-        <div class="legend-item"><span class="legend-line legend-forecast"></span>Forecast</div>
-        <div class="legend-item"><span class="legend-area-swatch"></span>Range</div>
-      </div>
-    </div>
-    
-    <div class="forecast-tile">
-      <div class="forecast-tile-header">
-        <span class="tile-emoji">🫘</span>
-        <span>Soybean</span>
-        <span class="tile-ra">RA: 0.81</span>
-      </div>
-      <iframe src="Soybean/forecast_soybean.html" title="Soybean Price Forecast" loading="lazy"></iframe>
-      <div class="forecast-legend">
-        <div class="legend-item"><span class="legend-line legend-observed"></span>Observed</div>
-        <div class="legend-item"><span class="legend-line legend-forecast"></span>Forecast</div>
-        <div class="legend-item"><span class="legend-area-swatch"></span>Range</div>
-      </div>
-    </div>
-    
-   <div class="forecast-tile">
-      <div class="forecast-tile-header">
-        <span class="tile-emoji">☕</span>
-        <span>Arabica</span>
-        <span class="tile-ra">RA: 0.68</span>
-      </div>
-      <iframe src="Arabica/forecast_arabica.html" title="Arabica (coffee) Price Forecast" loading="lazy"></iframe>
-      <div class="forecast-legend">
-        <div class="legend-item"><span class="legend-line legend-observed"></span>Observed</div>
-        <div class="legend-item"><span class="legend-line legend-forecast"></span>Forecast</div>
-        <div class="legend-item"><span class="legend-area-swatch"></span>Range</div>
-      </div>
-    </div>
-    
 
-    <div class="forecast-tile">
-      <div class="forecast-tile-header">
-        <span class="tile-emoji">🍬</span>
-        <span>Sugar</span>
-        <span class="tile-ra">RA: 0.71</span>
-      </div>
-      <iframe src="Sugar/forecast_sugar.html" title="Sugar Price Forecast" loading="lazy"></iframe>
-      <div class="forecast-legend">
-        <div class="legend-item"><span class="legend-line legend-observed"></span>Observed</div>
-        <div class="legend-item"><span class="legend-line legend-forecast"></span>Forecast</div>
-        <div class="legend-item"><span class="legend-area-swatch"></span>Range</div>
-      </div>
+    <div class="card tile">
+      <h3>🌽 Maize <span class="pill">Direction 74%</span></h3>
+      <iframe src="Maize/forecast_maize.html" title="Maize price forecast" loading="lazy"></iframe>
+    </div>
+
+    <div class="card tile">
+      <h3>🫘 Soybean <span class="pill">Direction 67%</span></h3>
+      <iframe src="Soybean/forecast_soybean.html" title="Soybean price forecast" loading="lazy"></iframe>
+    </div>
+
+    <div class="card tile">
+      <h3>☕ Arabica <span class="pill">Direction 71%</span></h3>
+      <iframe src="Arabica/forecast_arabica.html" title="Arabica (coffee) price forecast" loading="lazy"></iframe>
+    </div>
+
+    <div class="card tile">
+      <h3>🍬 Sugar <span class="pill">Direction 63%</span></h3>
+      <iframe src="Sugar/forecast_sugar.html" title="Sugar price forecast" loading="lazy"></iframe>
     </div>
 
   </div>
 </div>
 
-<script>
-  function toggleForecasts(btn) {
-    const panel = document.getElementById('forecast-panel');
-    const isOpen = panel.classList.contains('open');
-    if (isOpen) {
-      panel.classList.remove('open');
-      btn.classList.remove('active');
-      btn.textContent = '📈 View Forecasts';
-    } else {
-      panel.classList.add('open');
-      btn.classList.add('active');
-      btn.textContent = '📈 Hide Forecasts';
-      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-  }
-</script>
-
-<!-- ── Why AGRICAF Modal ── -->
-<div id="whyModal" class="modal-overlay" onclick="if(event.target===this)this.classList.remove('open')">
-  <div class="modal">
-    <button class="modal-close" onclick="document.getElementById('whyModal').classList.remove('open')">✕</button>
-    <span class="modal-tag">Why AGRICAF?</span>
+<!-- Why AGRICAF: the text behind the second header button -->
+<dialog id="whyDialog" onclick="if (event.target === this) this.close()">
+  <button class="close" onclick="whyDialog.close()">✕</button>
+  <div class="dialog-body">
+    <span class="tag">Why AGRICAF?</span>
     <h2>Good Forecasts Should Come With Good Explanations</h2>
-    <div class="modal-body">
-      <p>In February 2022, a tonne of wheat cost around $340 on the global market. Four months later, it cost nearly $440, a 30% increase caused by Russia's invasion of Ukraine. In France or Germany, bread prices rose by a few percent. In Egypt, which sources over 60% of its wheat from Russia and Ukraine, the shock threatened the livelihoods of millions. Across East Africa, it compounded an ongoing drought to push communities toward famine.</p>
-      <p class="modal-pullquote">When global commodity prices spike, high-income countries absorb the shock. Low-income countries bear the full force.</p>
-      <p>What makes these crises especially damaging is not just the price level. It is the surprise. Farmers in developing regions often have no reliable way to anticipate whether prices will rise or fall in coming months. Without that information, they cannot decide when to sell their harvest, how much to store, or what to plant next season. The information that would allow better decisions exists, buried in trade data, stock reports, and price histories, but it is not packaged in a way that reaches the people who need it most.</p>
+    <p>In February 2022, a tonne of wheat cost around $340 on the global market. Four months later, it cost nearly $440, a 30% increase caused by Russia's invasion of Ukraine. In France or Germany, bread prices rose by a few percent. In Egypt, which sources over 60% of its wheat from Russia and Ukraine, the shock threatened the livelihoods of millions. Across East Africa, it compounded an ongoing drought to push communities toward famine.</p>
+    <blockquote>When global commodity prices spike, high-income countries absorb the shock. Low-income countries bear the full force.</blockquote>
+    <p>What makes these crises especially damaging is not just the price level. It is the surprise. Farmers in developing regions often have no reliable way to anticipate whether prices will rise or fall in coming months. Without that information, they cannot decide when to sell their harvest, how much to store, or what to plant next season. The information that would allow better decisions exists, buried in trade data, stock reports, and price histories, but it is not packaged in a way that reaches the people who need it most.</p>
 
-      <h3>What Already Exists and What Is Missing</h3>
-      <p>Existing monitoring platforms like FAO's FPMA and WFP's Economic Explorer do excellent work tracking food prices. But they monitor without forecasting. They tell you what prices did last month, not what they are likely to do next month. For a policymaker or farmer planning ahead, this is like driving by looking only in the rearview mirror.</p>
-      <p>Forecasting tools do exist, but they are locked behind expensive subscriptions designed for corporate clients, rely on data unavailable to the public, and typically give you a prediction with no explanation of how it was generated or what assumptions drove the result.</p>
+    <h3>What Already Exists and What Is Missing</h3>
+    <p>Existing monitoring platforms like FAO's FPMA and WFP's Economic Explorer do excellent work tracking food prices. But they monitor without forecasting. They tell you what prices did last month, not what they are likely to do next month. For a policymaker or farmer planning ahead, this is like driving by looking only in the rearview mirror.</p>
+    <p>Forecasting tools do exist, but they are locked behind expensive subscriptions designed for corporate clients, rely on data unavailable to the public, and typically give you a prediction with no explanation of how it was generated or what assumptions drove the result.</p>
 
-      <h3>What AGRICAF Does Differently</h3>
-      <p><strong>It forecasts.</strong> AGRICAF produces monthly price forecasts up to twelve months ahead for five global agricultural commodities: wheat, maize, soybean, arabica coffee, and sugar. All inputs come from publicly available sources.</p>
-      <p><strong>It explains every forecast.</strong> For each prediction, AGRICAF shows which factors contributed most, how much each one mattered, and whether each factor pushed prices up or down. Results are organised into four levels of detail, from a broad annual overview down to a specific forecast for a specific month and year, so that different users can engage at the depth that suits them.</p>
-      <p><strong>It is fully open.</strong> Every step is documented and reproducible. A cooperative, a government ministry, or a research institute can use it independently and audit every calculation.</p>
+    <h3>What AGRICAF Does Differently</h3>
+    <p><strong>It forecasts.</strong> AGRICAF produces monthly price forecasts up to twelve months ahead for five global agricultural commodities: wheat, maize, soybean, arabica coffee, and sugar. All inputs come from publicly available sources.</p>
+    <p><strong>It explains every forecast.</strong> For each prediction, AGRICAF shows which factors contributed most, how much each one mattered, and whether each factor pushed prices up or down. Results are organised into four levels of detail, from a broad annual overview down to a specific forecast for a specific month and year, so that different users can engage at the depth that suits them.</p>
+    <p><strong>It is fully open.</strong> Every step is documented and reproducible. A cooperative, a government ministry, or a research institute can use it independently and audit every calculation.</p>
 
-      <h3>Who It Is For</h3>
-      <p>AGRICAF is designed for researchers in agricultural economics and food policy, analysts at food security organisations who need to understand what drives commodity price movements, and anyone who wants to extend the framework to new commodities or regions.</p>
-      <p class="modal-pullquote">Whether you are a researcher looking for a new approach, or an analyst trying to make sense of volatile markets: if you believe that good forecasts should come with good explanations, AGRICAF is for you.</p>
+    <h3>Who It Is For</h3>
+    <p>AGRICAF is designed for researchers in agricultural economics and food policy, analysts at food security organisations who need to understand what drives commodity price movements, and anyone who wants to extend the framework to new commodities or regions.</p>
+    <blockquote>Whether you are a researcher looking for a new approach, or an analyst trying to make sense of volatile markets: if you believe that good forecasts should come with good explanations, AGRICAF is for you.</blockquote>
 
-      <div class="modal-pills">
-        <span class="modal-pill">🌾 Wheat</span>
-        <span class="modal-pill">🌽 Maize</span>
-        <span class="modal-pill">🫘 Soybean</span>
-        <span class="modal-pill">☕ Arabica Coffee</span>
-        <span class="modal-pill">🍬 Sugar</span>
-        <span class="modal-pill">12-month horizon</span>
-        <span class="modal-pill">Open data</span>
-      </div>
+    <div class="pills">
+      <span class="pill">🌾 Wheat</span>
+      <span class="pill">🌽 Maize</span>
+      <span class="pill">🫘 Soybean</span>
+      <span class="pill">☕ Arabica Coffee</span>
+      <span class="pill">🍬 Sugar</span>
+      <span class="pill">12-month horizon</span>
+      <span class="pill">Open data</span>
     </div>
   </div>
-</div>
+</dialog>
 
-<!-- ── Commodities ── -->
-<div id="commodities" class="section-wrap">
-  <div class="section-header">
+<!-- Commodities: one card per commodity page -->
+<section id="commodities" class="wrap">
+  <div class="centered">
     <span class="tag">Commodities</span>
     <h2>Select a Commodity</h2>
-    <p class="section-sub">Monthly forecasts up to 12 months ahead, with plain-language explanations</p>
-    <p class="section-sub">
-      Forecasts are updated monthly, with a processing delay after the release of the 
-      <a href="https://www.worldbank.org/en/research/commodity-markets" target="_blank" rel="noopener">
-        official World Bank price data
-      </a>.
+    <p class="sub">Monthly forecasts up to 12 months ahead, with plain-language explanations</p>
+    <p class="sub">
+      Forecasts are updated monthly, with a processing delay after the release of the
+      <a href="https://www.worldbank.org/en/research/commodity-markets" target="_blank" rel="noopener">official World Bank price data</a>.
     </p>
   </div>
 
-  <div class="commodity-grid">
-
-    <a class="commodity-card active" href="wheat.html">
-      <span class="commodity-emoji">🌾</span>
-      <span class="commodity-name">Wheat</span>
-      <p class="commodity-desc">Global prices, production levels, and climate events.</p>
-      <span class="commodity-arrow">Explore →</span>
+  <div class="grid" style="--min: 165px">
+    <a class="card" href="wheat.html" style="--stripe: var(--warm3)">
+      <span class="emoji">🌾</span>
+      <h3>Wheat</h3>
+      <p>Global prices, production levels, and climate events.</p>
+      <span class="arrow">Explore →</span>
     </a>
-
-    <a class="commodity-card active" href="maize.html">
-      <span class="commodity-emoji">🌽</span>
-      <span class="commodity-name">Maize</span>
-      <p class="commodity-desc">Fuel demand, weather patterns, and trade flows.</p>
-      <span class="commodity-arrow">Explore →</span>
+    <a class="card" href="maize.html" style="--stripe: var(--warm2)">
+      <span class="emoji">🌽</span>
+      <h3>Maize</h3>
+      <p>Fuel demand, weather patterns, and trade flows.</p>
+      <span class="arrow">Explore →</span>
     </a>
-
-    <a class="commodity-card active" href="soybean.html">
-      <span class="commodity-emoji">🫘</span>
-      <span class="commodity-name">Soybean</span>
-      <p class="commodity-desc">Oilseed markets, South American harvests, and processing demand.</p>
-      <span class="commodity-arrow">Explore →</span>
+    <a class="card" href="soybean.html" style="--stripe: var(--warm4)">
+      <span class="emoji">🫘</span>
+      <h3>Soybean</h3>
+      <p>Oilseed markets, South American harvests, and processing demand.</p>
+      <span class="arrow">Explore →</span>
     </a>
-    
-    <a class="commodity-card active" href="arabica.html">
-      <span class="commodity-emoji">☕</span>
-      <span class="commodity-name">Arabica (coffee)</span>
-      <p class="commodity-desc">Brazilian harvests, frost risk, and currency movements.</p>
-      <span class="commodity-arrow">Explore →</span>
+    <a class="card" href="arabica.html" style="--stripe: var(--warm5)">
+      <span class="emoji">☕</span>
+      <h3>Arabica (coffee)</h3>
+      <p>Brazilian harvests, frost risk, and currency movements.</p>
+      <span class="arrow">Explore →</span>
     </a>
-
-    <a class="commodity-card active" href="sugar.html">
-      <span class="commodity-emoji">🍬</span>
-      <span class="commodity-name">Sugar</span>
-      <p class="commodity-desc">Cane and beet production cycles, and energy market linkages.</p>
-      <span class="commodity-arrow">Explore →</span>
+    <a class="card" href="sugar.html" style="--stripe: var(--warm1)">
+      <span class="emoji">🍬</span>
+      <h3>Sugar</h3>
+      <p>Cane and beet production cycles, and energy market linkages.</p>
+      <span class="arrow">Explore →</span>
     </a>
-
-  </div>
-</div>
-
-<!-- ── About ── -->
-<section id="about" class="about">
-  <div class="about-inner">
-    <div class="about-text">
-      <span class="tag">About</span>
-      <h2>Rotem Zelingher</h2>
-      <p>Hi! I am an applied economist specialising in time series forecasting, machine learning, and statistical inference. I develop open, interpretable frameworks that combine econometric theory with machine learning for robust price prediction.</p>
-      <p class="about-belief">Good forecasts should come with good explanations, and both should be available to everyone.</p>
-
-      <a class="about-contact" href="mailto:rotem.zelingher@wu.ac.at">
-        📬 I welcome questions, collaborations, and feedback:
-        <span>rotem.zelingher@wu.ac.at</span>
-      </a>
-
-      <h3>The AGRICAF Framework</h3>
-      <p><strong>AGRICAF</strong> (Agricultural Commodity Forecasting Framework) is an open-source pipeline integrating multiple statistical and machine learning methods for forecasting global agricultural commodity prices, monthly, up to one year ahead.</p>
-      <p>The framework emphasises transparency and policy relevance, with a particular focus on making price forecasts and market intelligence accessible to non-specialist and vulnerable stakeholders in low-income contexts.</p>
-
-      <div class="about-meta">
-        <a href="https://doi.org/10.5281/zenodo.19148941" target="_blank">
-          <img src="https://zenodo.org/badge/1180637670.svg" alt="DOI"/>
-        </a>
-      </div>
-    </div>
   </div>
 </section>
 
-<!-- ── Footer ── -->
+<!-- About -->
+<section class="about">
+  <div>
+    <span class="tag">About</span>
+    <h2>Rotem Zelingher</h2>
+    <p>Hi! I am an applied economist specialising in time series forecasting, machine learning, and statistical inference. I develop open, interpretable frameworks that combine econometric theory with machine learning for robust price prediction.</p>
+    <blockquote>Good forecasts should come with good explanations, and both should be available to everyone.</blockquote>
+    <a class="contact" href="mailto:rotem.zelingher@wu.ac.at">📬 I welcome questions, collaborations, and feedback: rotem.zelingher@wu.ac.at</a>
+
+    <h3>The AGRICAF Framework</h3>
+    <p><strong>AGRICAF</strong> (Agricultural Commodity Forecasting Framework) is an open-source pipeline integrating multiple statistical and machine learning methods for forecasting global agricultural commodity prices, monthly, up to one year ahead.</p>
+    <p>The framework emphasises transparency and policy relevance, with a particular focus on making price forecasts and market intelligence accessible to non-specialist and vulnerable stakeholders in low-income contexts.</p>
+    <p><a href="https://doi.org/10.5281/zenodo.19148941" target="_blank" rel="noopener"><img src="https://zenodo.org/badge/1180637670.svg" alt="DOI"/></a></p>
+  </div>
+</section>
+
 <footer>
-  <p style="font-family:'Playfair Display',serif; font-weight:700; color:var(--brown); margin-bottom:0.25rem;">AGRICAF</p>
+  <p class="brand">AGRICAF</p>
   <p>Agricultural Commodity Analysis and Forecasts</p>
-  <p style="margin-top:0.25rem;">
-    Rotem Zelingher · Vienna University of Economics and Business
+  <p>Rotem Zelingher · Vienna University of Economics and Business (WU) · <a href="https://github.com/RotemZel" target="_blank" rel="noopener">GitHub</a></p>
+</footer>
+
+</body>
+</html>

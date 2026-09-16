@@ -6,286 +6,163 @@
   <title>AGRICAF · How It Works</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
+    /* Settings: the colours, fonts and sizes the whole page is built from */
     :root {
-      --cream:  #FFF8F0;
-      --warm1:  #FADEC9;
-      --warm2:  #F5C5A3;
-      --warm3:  #E8A87C;
-      --warm4:  #D4956B;
-      --warm5:  #C4845A;
-      --brown:  #3D2B1F;
-      --text:   #4A3728;
-      --muted:  #9A7B6A;
-      --shadow: rgba(61,43,31,0.10);
+      --cream:  #FFF8F0;                      /* page background */
+      --warm1:  #FADEC9;                      /* soft fills: gradients, pills, hover backgrounds */
+      --warm2:  #F5C5A3;                      /* borders of cards and controls */
+      --warm3:  #E8A87C;                      /* borders of tags and hovered cards, quote bars */
+      --warm4:  #D4956B;                      /* main accent: buttons, links, tags */
+      --warm5:  #C4845A;                      /* pressed accent and pill text */
+      --brown:  #3D2B1F;                      /* headings */
+      --text:   #4A3728;                      /* body text */
+      --muted:  #9A7B6A;                      /* secondary text */
+      --shadow: rgba(61, 43, 31, 0.10);       /* shadow colour under cards */
+      --serif:  'Playfair Display', serif;    /* headings */
+      --sans:   'Source Sans 3', sans-serif;  /* everything else */
+      --radius: 18px;                         /* corner radius of cards and images */
+      --content-width: 800px;                 /* width of the text column */
+      --fade: 0.4s;                           /* duration of the fade-in when a block appears */
+      --stagger: 0.05s;                       /* extra fade-in delay per card in a grid */
     }
 
+    /* Base: box model, body text, a faint paper grain under everything */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--cream);
-      color: var(--text);
-      font-family: 'Source Sans 3', sans-serif;
-      font-weight: 300;
-      font-size: 1rem;
-      min-height: 100vh;
-    }
-
+    body { background: var(--cream); color: var(--text); font-family: var(--sans); font-weight: 300; min-height: 100vh; }
     body::before {
       content: '';
-      position: fixed; inset: 0;
+      position: fixed; inset: 0; z-index: -1;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 0;
+    }
+    h1, h2, h3 { font-family: var(--serif); font-weight: 700; color: var(--brown); line-height: 1.2; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── Nav ── */
-    nav {
-      position: relative;
-      z-index: 10;
-      background: white;
-      padding: 0.9rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 1px 8px var(--shadow);
-    }
-
-    .nav-brand {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--brown);
-      text-decoration: none;
-    }
-
-    .nav-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.9rem;
-      color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .nav-back:hover { color: var(--brown); }
-
-    /* ── Main ── */
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 4rem 1.5rem 6rem;
-      animation: fadeUp 0.4s ease both;
-    }
-
-    /* ── Header ── */
-    .page-tag {
+    /* Labels: a bordered uppercase tag and a small uppercase caption */
+    .tag {
       display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.75rem;
+      font-weight: 600;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--warm4);
       border: 1px solid var(--warm3);
       border-radius: 20px;
-      padding: 0.25rem 0.85rem;
-      margin-bottom: 1.1rem;
+      padding: 0.28rem 0.9rem;
+      margin-bottom: 1.2rem;
     }
+    .label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
 
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 700;
-      color: var(--brown);
-      line-height: 1.15;
-      margin-bottom: 2rem;
-    }
-    h1 em { font-style: italic; color: var(--warm4); }
-
-    /* ── Summary paragraph ── */
-    .summary {
-      font-size: 1.05rem;
-      line-height: 1.9;
-      color: var(--text);
+    /* Cards: a white box. Inside a grid a card stacks its content, fades in after the card before it,
+       and shows the colour set in --stripe on the card as a top stripe */
+    .card {
       background: white;
       border: 1px solid var(--warm2);
-      border-left: 4px solid var(--warm3);
-      border-radius: 18px;
-      padding: 1.8rem 2rem;
+      border-radius: var(--radius);
       box-shadow: 0 2px 10px var(--shadow);
-      margin-bottom: 3rem;
     }
-
-    /* ── Stage pills ── */
-    .stages {
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 1rem;
-      margin-bottom: 3.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(var(--min), 1fr));
+      gap: 1.2rem;
     }
-
-    .stage-pill {
-      background: white;
-      border: 1px solid var(--warm2);
-      border-radius: 18px;
-      padding: 1.2rem 1.2rem 1.1rem;
+    .grid > .card {
       position: relative;
       overflow: hidden;
-      box-shadow: 0 2px 8px var(--shadow);
-      animation: fadeUp 0.4s ease both;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      padding: 1.5rem 1.4rem 1.3rem;
+      animation: fadeUp var(--fade) ease both;
     }
+    .grid > .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--stripe, transparent); }
+    .grid > .card:nth-child(1) { animation-delay: calc(1 * var(--stagger)); }
+    .grid > .card:nth-child(2) { animation-delay: calc(2 * var(--stagger)); }
+    .grid > .card:nth-child(3) { animation-delay: calc(3 * var(--stagger)); }
+    .grid > .card:nth-child(4) { animation-delay: calc(4 * var(--stagger)); }
+    .card h3 { font-size: 1rem; }
+    .card p { font-size: 0.88rem; color: var(--muted); line-height: 1.55; flex: 1; }
 
-    .stage-pill:nth-child(1) { animation-delay: 0.05s; }
-    .stage-pill:nth-child(2) { animation-delay: 0.10s; }
-    .stage-pill:nth-child(3) { animation-delay: 0.15s; }
-    .stage-pill:nth-child(4) { animation-delay: 0.20s; }
+    /* Top bar */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 2rem; background: white; box-shadow: 0 1px 8px var(--shadow); }
+    nav .brand { font-size: 1.1rem; }
+    nav .back { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    nav .back:hover { color: var(--brown); }
 
-    .stage-pill::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 4px;
-      border-radius: 18px 18px 0 0;
-    }
-    .stage-pill:nth-child(1)::before { background: var(--warm2); }
-    .stage-pill:nth-child(2)::before { background: var(--warm3); }
-    .stage-pill:nth-child(3)::before { background: var(--warm4); }
-    .stage-pill:nth-child(4)::before { background: var(--warm5); }
+    /* Page column: title, summary card, stage grid, workflow figure */
+    main { max-width: var(--content-width); margin: 0 auto; padding: 4rem 1.5rem 6rem; animation: fadeUp var(--fade) ease both; }
+    main h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin-bottom: 2rem; }
+    h1 em { color: var(--warm4); }
+    .summary { font-size: 1.05rem; line-height: 1.9; border-left: 4px solid var(--warm3); padding: 1.8rem 2rem; margin-bottom: 3rem; }
+    main > .grid { margin-bottom: 3.5rem; }
+    .workflow { text-align: center; }
+    .workflow .label { margin-bottom: 1.2rem; }
+    .workflow img { width: 100%; max-width: 700px; border-radius: var(--radius); border: 1px solid var(--warm2); box-shadow: 0 4px 20px var(--shadow); }
 
-    .stage-number {
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.35rem;
-    }
-
-    .stage-name {
-      font-family: 'Playfair Display', serif;
-      font-size: 0.98rem;
-      font-weight: 700;
-      color: var(--brown);
-      line-height: 1.25;
-    }
-
-    .stage-desc {
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.55;
-      margin-top: 0.35rem;
-    }
-
-    /* ── Workflow image ── */
-    .workflow-section {
-      text-align: center;
-    }
-
-    .workflow-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 1.2rem;
-      display: block;
-    }
-
-    .workflow-image {
-      width: 100%;
-      max-width: 700px;
-      border-radius: 18px;
-      border: 1px solid var(--warm2);
-      box-shadow: 0 4px 20px var(--shadow);
-    }
-
-    /* ── Footer ── */
-    footer {
-      position: relative;
-      z-index: 1;
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.88rem;
-      color: var(--muted);
-      background: white;
-    }
+    /* Footer */
+    footer { text-align: center; padding: 2rem; font-size: 0.88rem; color: var(--muted); background: white; }
+    footer p + p { margin-top: 0.25rem; }
     footer a { color: var(--warm4); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .brand { font-family: var(--serif); font-weight: 700; color: var(--brown); text-decoration: none; }
   </style>
 </head>
 <body>
 
-<!-- ── Nav ── -->
 <nav>
-  <a class="nav-brand" href="index.html">AGRICAF</a>
-  <a class="nav-back" href="index.html">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="15 18 9 12 15 6"/>
-    </svg>
+  <a class="brand" href="index.html">AGRICAF</a>
+  <a class="back" href="index.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     Back
   </a>
 </nav>
 
-<!-- ── Content ── -->
-<div class="container">
-
-  <span class="page-tag">Methodology</span>
+<main>
+  <span class="tag">Methodology</span>
   <h1>How <em>AGRICAF</em> Works</h1>
 
-  <p class="summary">
-    AGRICAF is a four-stage process that turns raw, publicly available data into price forecasts with plain-language explanations. It starts by collecting and harmonising information from many sources, including trade statistics, production figures, stock reports, and monthly price histories. A screening step then identifies which of those sources actually help predict prices for each commodity, season, and time horizon, discarding the rest so the model is not misled by noise. The forecasting stage combines up to ten different statistical and machine learning methods to produce monthly price predictions up to twelve months ahead, automatically selecting the best-performing approach for each situation. Finally, every forecast is accompanied by an explanation: which factors pushed the price up or down, by how much, and how that compares to historical patterns. These explanations are presented at four levels of detail, from a broad annual overview to a forensic breakdown of a single forecast, so that the results are useful whether you are a policymaker, a researcher, or a market practitioner.
+  <p class="card summary">
+    AGRICAF is a four-stage process that turns raw, publicly available data into price forecasts with plain-language explanations. It starts by collecting and harmonising information from many sources, including trade statistics, production figures, stock reports, and monthly price histories. A screening step then identifies which of those sources actually help predict prices for each commodity, season, and time horizon, discarding the rest so the model is not misled by noise. The forecasting stage runs fifteen statistical and machine learning methods against each other for every commodity, month and horizon, and publishes the one with the lowest past error under its own name, with a band around it showing how wrong that method has been before. Every choice along the way, which factors to keep and which method to trust, is made using earlier years only, so the accuracy on record is the accuracy the procedure would really have delivered at the time. Finally, every forecast is accompanied by an explanation: which factors pushed the price up or down, by how much, and how that compares to historical patterns. These explanations are presented at four levels of detail, from a broad annual overview to a forensic breakdown of a single forecast, so that the results are useful whether you are a policymaker, a researcher, or a market practitioner.
   </p>
 
-  <!-- Stage pills -->
-  <div class="stages">
-    <div class="stage-pill">
-      <div class="stage-number">Stage 1</div>
-      <div class="stage-name">Gathering the Data</div>
-      <div class="stage-desc">Prices, production, stocks, and trade statistics are collected and aligned into a consistent timeline for each commodity.</div>
+  <!-- The four stages -->
+  <div class="grid" style="--min: 170px">
+    <div class="card" style="--stripe: var(--warm2)">
+      <span class="label">Stage 1</span>
+      <h3>Gathering the Data</h3>
+      <p>Prices, production, stocks, and trade statistics are collected and aligned into a consistent timeline. Each annual figure enters only once its marketing year has begun.</p>
     </div>
-    <div class="stage-pill">
-      <div class="stage-number">Stage 2</div>
-      <div class="stage-name">Selecting What Matters</div>
-      <div class="stage-desc">Out of dozens of candidate factors, only those that genuinely improve forecast accuracy are kept. The rest are discarded.</div>
+    <div class="card" style="--stripe: var(--warm3)">
+      <span class="label">Stage 2</span>
+      <h3>Selecting What Matters</h3>
+      <p>Model families compete on the same years. The winner's ranking decides which of dozens of candidate factors survive into three progressively tighter shortlists.</p>
     </div>
-    <div class="stage-pill">
-      <div class="stage-number">Stage 3</div>
-      <div class="stage-name">Generating Forecasts</div>
-      <div class="stage-desc">Ten models are tested on historical data. The best-performing model for each month and horizon is selected automatically.</div>
+    <div class="card" style="--stripe: var(--warm4)">
+      <span class="label">Stage 3</span>
+      <h3>Generating Forecasts</h3>
+      <p>Fifteen models are tested on historical data, including two naive benchmarks. The one with the lowest past error for each month and horizon is published under its own name, with an 80% band.</p>
     </div>
-    <div class="stage-pill">
-      <div class="stage-number">Stage 4</div>
-      <div class="stage-name">Explaining the Results</div>
-      <div class="stage-desc">Each forecast comes with a breakdown of which factors drove it, at four levels of detail from broad to specific.</div>
+    <div class="card" style="--stripe: var(--warm5)">
+      <span class="label">Stage 4</span>
+      <h3>Explaining the Results</h3>
+      <p>Each forecast comes with a breakdown of which factors drove it, at four levels of detail from broad to specific.</p>
     </div>
   </div>
 
-  <!-- Workflow image -->
-  <div class="workflow-section">
-    <span class="workflow-label">AGRICAF Pipeline · Overview</span>
-    <img
-      class="workflow-image"
-      src="https://github.com/user-attachments/assets/a381b98b-4de1-4db5-9629-bce9c4fa77a4"
-      alt="AGRICAF four-stage workflow chart"
-    />
-  </div>
+  <!-- Workflow figure -->
+  <figure class="workflow">
+    <figcaption class="label">AGRICAF Pipeline · Overview</figcaption>
+    <img src="https://github.com/user-attachments/assets/a381b98b-4de1-4db5-9629-bce9c4fa77a4" alt="AGRICAF four-stage workflow chart"/>
+  </figure>
+</main>
 
-</div>
-
-<!-- ── Footer ── -->
 <footer>
-  <p style="font-family:'Playfair Display',serif; font-weight:700; color:var(--brown); margin-bottom:0.25rem;">AGRICAF</p>
+  <p class="brand">AGRICAF</p>
   <p>Agricultural Commodity Analysis and Forecasts</p>
-  <p style="margin-top:0.25rem;">
-    Rotem Zelingher · Vienna University of Economics and Business (WU) ·
-    <a href="https://github.com/RotemZel/communicate-wheat-forecasts" target="_blank">GitHub</a>
-  </p>
+  <p>Rotem Zelingher · Vienna University of Economics and Business (WU) · <a href="https://github.com/RotemZel/communicate-wheat-forecasts" target="_blank" rel="noopener">GitHub</a></p>
 </footer>
 
 </body>
