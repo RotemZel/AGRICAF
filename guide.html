@@ -75,6 +75,16 @@
     .key i { width: var(--swatch); height: var(--swatch); border-radius: 6px; flex-shrink: 0; border: 1px solid var(--warm2); }
     .key p { margin: 0; font-size: 0.95rem; line-height: 1.6; }
 
+    /* A formula, set apart so it can be read or skipped */
+    .eq { font-family: ui-monospace, 'Source Code Pro', monospace; font-size: 0.92rem;
+          color: var(--brown); background: white; border: 1px solid var(--warm2);
+          border-radius: 10px; padding: 0.8rem 1.1rem; margin: 1.1rem 0; text-align: center; }
+
+    /* A colour scale drawn as the bar it is, with its ends named underneath */
+    .scale { margin: 0.8rem 0 0.9rem; }
+    .scale .bar { height: 16px; border-radius: 8px; border: 1px solid var(--warm2); }
+    .scale .ends { display: flex; justify-content: space-between; margin-top: 0.45rem; font-size: 0.86rem; color: var(--muted); }
+
     /* Name on the left, what it means on the right */
     table { border-collapse: collapse; width: 100%; margin: 1rem 0 1.5rem; font-size: 0.95rem; }
     td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--warm1); vertical-align: top; }
@@ -113,10 +123,13 @@
 
   <h2>What the forecast itself shows</h2>
   <p>
-    The chart at the top of each commodity page runs from the past into the future. The black line is what the price actually did. The coloured line is what AGRICAF expects it to do over the coming year. The shaded band around it is the room for error: the forecast is expected to land inside that band about four times in five. It widens the further ahead you look, because the further ahead you look, the less anyone knows.
+    The chart at the top of each commodity page runs from the past into the future. The black line is what the price actually did. The coloured line is what AGRICAF expects it to do over the coming year. The shaded band around it is the room for error. It widens the further ahead you look, because the further ahead you look, the less anyone knows.
   </p>
   <p>
     Prices here are always given as a change against the same month one year earlier. Zero means the price is where it was a year ago. Plus twenty means it is twenty per cent higher.
+  </p>
+  <p>
+    The band is built to hold the outcome about four times in five. Checked against the record it has managed closer to seven times in ten, and the misses bunch together in the most turbulent years, which are the ones you would most want it to cover. Read it as a guide to how uncertain the number is, not as a promise.
   </p>
 
   <h2>The four questions</h2>
@@ -151,15 +164,25 @@
     There are two views, and colour means something different in each. Check which one you are looking at before reading the colours.
   </p>
 
-  <p><span class="label">On the “Relative Intensity” view, colour is how much</span></p>
-  <div class="key"><i style="background:#ace600"></i><p>Barely mattered here.</p></div>
-  <div class="key"><i style="background:#FFAA33"></i><p>Mattered a fair amount.</p></div>
-  <div class="key"><i style="background:#b10026"></i><p>Did most of the work.</p></div>
+  <p><span class="label">“Relative Intensity”: how much did this factor matter, compared with the others?</span></p>
+  <div class="scale">
+    <div class="bar" style="background:linear-gradient(to right,#ace600,#FFAA33,#b10026)"></div>
+    <div class="ends"><span>0</span><span>1</span></div>
+  </div>
+  <div class="eq">intensity = size of this factor's effect ÷ size of every factor's effect added up</div>
+  <p>
+    It runs from 0 to 1 and the column adds up to 1. An intensity of 0.35 means this factor accounted for 35% of everything the model used for that forecast, whichever way it pushed.
+  </p>
 
-  <p style="margin-top:1.6rem"><span class="label">On the “Impact” view, colour is which way</span></p>
-  <div class="key"><i style="background:#053061"></i><p>Pushed the price <strong>down</strong>.</p></div>
-  <div class="key"><i style="background:#F7F7F7"></i><p>Pushed it neither way.</p></div>
-  <div class="key"><i style="background:#67001F"></i><p>Pushed the price <strong>up</strong>.</p></div>
+  <p style="margin-top:1.8rem"><span class="label">“Impact”: which way did this factor push the forecast, given the value it took?</span></p>
+  <div class="scale">
+    <div class="bar" style="background:linear-gradient(to right,#053061,#2971B1,#6AACD0,#C1DDEB,#F7F7F7,#FACDB5,#E58267,#BB2933,#67001F)"></div>
+    <div class="ends"><span>strongly negative</span><span>0</span><span>strongly positive</span></div>
+  </div>
+  <div class="eq">impact = whether the factor rose or fell × its effect</div>
+  <p>
+    When the factor's value and its effect carry the same sign, the impact is positive. When their signs differ, it is negative. The scale runs outwards from zero in the middle: the darker the colour, the stronger the impact, and a pale square means the factor barely moved the forecast either way. A factor that fell while the price rose, and a factor that rose while the price fell, are both the same kind of inverse relationship and both show blue.
+  </p>
 
   <div class="key" style="margin-top:1.6rem"><i style="background:#ece8e0"></i><p>On either view, a plain beige square means this factor was not used for that month and distance at all. It is an absence, not a low score.</p></div>
 
