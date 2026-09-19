@@ -30,6 +30,9 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
   text-transform: uppercase; letter-spacing: .1em; }
 .sec-lbl { font-size: 0.55rem; text-transform: uppercase; letter-spacing: .12em;
   color: var(--muted); margin-bottom: 6px; }
+.how   { margin-top: auto; font-size: 0.62rem; line-height: 1.65; color: #4a4a4a; }
+.how p { margin-bottom: 7px; }
+.how b { color: var(--text); font-weight: 600; }
 .pill-grid { display: flex; flex-wrap: wrap; gap: 4px; }
 .pill { padding: 3px 7px; font-size: 0.58rem; border: 1px solid var(--border);
   border-radius: 3px; cursor: pointer; background: var(--bg); color: var(--muted);
@@ -93,10 +96,6 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
       <div class="sb-sub" id="sb-sub">Partial Dependence</div>
     </div>
     <div>
-      <div class="sec-lbl">Crop</div>
-      <div class="pill-grid" id="crop-pills"></div>
-    </div>
-    <div>
       <div class="sec-lbl">Forecast horizon (lag)</div>
       <div class="pill-grid" id="lag-pills"></div>
     </div>
@@ -138,11 +137,23 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
         </div>
       </div>
     </div>
-    <div style="margin-top:auto;font-size:0.52rem;color:var(--muted);line-height:1.8">
-      <strong style="color:var(--text)">x</strong> = feature value (relative change)<br>
-      <strong style="color:var(--text)">y</strong> = Shapley value (phi)<br>
-      text = local intensity (%)<br>
-      colour = forecast month
+    <div class="how">
+      <div class="sec-lbl">Reading the figure</div>
+      <p>One panel per predictor. Each point is one explained year: across, the
+         predictor&rsquo;s own value that year, measured against the same month a
+         year earlier; up, the Shapley value the model gave it. The line is a
+         smooth fitted through those points.</p>
+      <p><b>Read the slope, not the level.</b> Where the line is flat, the
+         model&rsquo;s response does not change with the size of the movement.
+         Where it steepens, the response is non-linear: a small shortfall and a
+         large one do not carry proportionate weight. Where the line crosses
+         zero, the predictor stops pushing the forecast one way and begins
+         pushing it the other.</p>
+      <p>Panels are ordered by Relative Intensity, and how many are shown is set
+         on the left. Colour marks the forecast month.</p>
+      <p>A smooth drawn through few years is not evidence of a threshold. Read
+         the shape as a description of the fitted model, not as an estimated
+         response of the market.</p>
     </div>
   </div>
   <div id="main">
@@ -160,10 +171,10 @@ const MONTH_COLORS = [
   "#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b",
   "#e377c2","#7f7f7f","#bcbd22","#17becf","#6b4c9a","#637939"
 ];
-const allCrops = ["sugar"];
-const allLags  = [1,2,3,4,5,6,7,8,9,10,11,12];
- 
-let activeCrop  = allCrops[0];
+/* One page, one crop: the R script drops the others before writing this file. */
+const activeCrop = Object.keys(DATA)[0];
+const allLags    = [1,2,3,4,5,6,7,8,9,10,11,12];
+
 let activeLag   = allLags[0];
 
 /* A file carries one forecast month, so the month pills are built from the
@@ -207,24 +218,8 @@ function loessApprox(pts, span) {
   return result;
 }
 function buildControls() {
-  /* Crop pills */
-  const cd = document.getElementById("crop-pills");
-  cd.innerHTML = "";
-  allCrops.forEach(cr => {
-    const b = document.createElement("div");
-    b.className = "pill"+(cr===activeCrop?" on":"");
-    b.textContent = cr.charAt(0).toUpperCase()+cr.slice(1);
-    b.onclick = () => {
-      activeCrop = cr;
-      cd.querySelectorAll(".pill").forEach(x=>x.classList.remove("on"));
-      b.classList.add("on");
-      buildLags(); draw();
-    };
-    cd.appendChild(b);
-  });
- 
   buildLags();
- 
+
   /* Month pills ? multi-select, NOT coloured */
   const md = document.getElementById("month-pills");
   if (md.children.length === 0) {
