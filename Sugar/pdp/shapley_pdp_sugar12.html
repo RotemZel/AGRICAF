@@ -100,10 +100,6 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
       <div class="pill-grid" id="lag-pills"></div>
     </div>
     <div>
-      <div class="sec-lbl">Forecast month</div>
-      <div class="pill-grid" id="month-pills"></div>
-    </div>
-    <div>
       <div class="sec-lbl">Relative Intensity ? top features</div>
       <div style="display:flex;align-items:center;gap:8px">
         <input id="topx-input" type="number" min="1" step="1" value="3"
@@ -219,27 +215,6 @@ function loessApprox(pts, span) {
 }
 function buildControls() {
   buildLags();
-
-  /* Month pills ? multi-select, NOT coloured */
-  const md = document.getElementById("month-pills");
-  if (md.children.length === 0) {
-    MONTHS_PRESENT.forEach(m => {
-      const b = document.createElement("div");
-      b.className = "pill"+(activeMonths.has(m)?" on":"");
-      b.textContent = MONTH_ABBR[m-1];
-      b.title = MONTH_NAMES[m-1];
-      b.onclick = () => {
-        if (activeMonths.has(m)) { if (activeMonths.size===1) return; activeMonths.delete(m); }
-        else activeMonths.add(m);
-        b.classList.toggle("on", activeMonths.has(m));
-        buildLegend(); draw();
-      };
-      b.dataset.m = m;
-      md.appendChild(b);
-    });
-  }
- 
-  /* Month legend (bottom) */
   buildLegend();
 }
  
@@ -275,9 +250,6 @@ function buildLegend() {
       if (activeMonths.has(m)) { if (activeMonths.size===1) return; activeMonths.delete(m); }
       else activeMonths.add(m);
       item.classList.toggle("off", !activeMonths.has(m));
-      /* sync the matching month pill */
-      const pill = document.querySelector(`#month-pills [data-m="${m}"]`);
-      if (pill) pill.classList.toggle("on", activeMonths.has(m));
       draw();
     };
     leg.appendChild(item);
