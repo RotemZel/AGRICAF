@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AGRICAF · How to Read the Explanations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    /* Settings: the colours, fonts and sizes the whole page is built from */
+    :root {
+      --cream:  #FFF8F0;                      /* page background */
+      --warm1:  #FADEC9;                      /* soft fills */
+      --warm2:  #F5C5A3;                      /* borders of cards */
+      --warm3:  #E8A87C;                      /* borders of tags, quote bars */
+      --warm4:  #D4956B;                      /* main accent */
+      --warm5:  #C4845A;                      /* pressed accent */
+      --brown:  #3D2B1F;                      /* headings */
+      --text:   #4A3728;                      /* body text */
+      --muted:  #9A7B6A;                      /* secondary text */
+      --shadow: rgba(61, 43, 31, 0.10);       /* shadow colour under cards */
+      --serif:  'Playfair Display', serif;    /* headings */
+      --sans:   'Source Sans 3', sans-serif;  /* everything else */
+      --radius: 18px;                         /* corner radius of cards */
+      --content-width: 800px;                 /* width of the text column */
+      --fade: 0.4s;                           /* duration of the fade-in */
+      --swatch: 34px;                         /* side of a colour sample */
+    }
+
+    /* Base: box model, body text, a faint paper grain under everything */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--cream); color: var(--text); font-family: var(--sans); font-weight: 300; min-height: 100vh; }
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: -1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+    h1, h2, h3 { font-family: var(--serif); font-weight: 700; color: var(--brown); line-height: 1.2; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Labels: a bordered uppercase tag and a small uppercase caption */
+    .tag {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--warm4);
+      border: 1px solid var(--warm3); border-radius: 20px;
+      padding: 0.28rem 0.9rem; margin-bottom: 1.2rem;
+    }
+    .label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+
+    /* Top bar */
+    nav { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 2rem; background: white; box-shadow: 0 1px 8px var(--shadow); }
+    nav .brand { font-family: var(--serif); font-weight: 700; color: var(--brown); text-decoration: none; font-size: 1.1rem; }
+    nav .back { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    nav .back:hover { color: var(--brown); }
+
+    /* Page column */
+    main { max-width: var(--content-width); margin: 0 auto; padding: 4rem 1.5rem 6rem; animation: fadeUp var(--fade) ease both; }
+    main h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin-bottom: 2rem; }
+    h1 em { color: var(--warm4); }
+    main h2 { font-size: 1.35rem; margin: 3rem 0 1rem; }
+    main p { line-height: 1.85; margin-bottom: 1rem; }
+    .summary { background: white; border: 1px solid var(--warm2); border-radius: var(--radius); box-shadow: 0 2px 10px var(--shadow); font-size: 1.05rem; line-height: 1.9; border-left: 4px solid var(--warm3); padding: 1.8rem 2rem; margin-bottom: 1rem; }
+
+    /* A question and the answer it leads to */
+    .ask { border-left: 3px solid var(--warm2); padding: 0.2rem 0 0.2rem 1.2rem; margin: 1.4rem 0; }
+    .ask strong { display: block; font-family: var(--serif); font-size: 1.08rem; color: var(--brown); margin-bottom: 0.3rem; }
+    .ask span { color: var(--muted); font-size: 0.95rem; line-height: 1.7; }
+
+    /* A colour sample beside the sentence explaining it */
+    .key { display: flex; align-items: center; gap: 1rem; margin: 0.7rem 0; }
+    .key i { width: var(--swatch); height: var(--swatch); border-radius: 6px; flex-shrink: 0; border: 1px solid var(--warm2); }
+    .key p { margin: 0; font-size: 0.95rem; line-height: 1.6; }
+
+    /* Name on the left, what it means on the right */
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0 1.5rem; font-size: 0.95rem; }
+    td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--warm1); vertical-align: top; }
+    td:first-child { font-family: ui-monospace, 'Source Code Pro', monospace; color: var(--brown); white-space: nowrap; width: 1%; }
+    td:last-child { color: var(--muted); }
+
+    /* The one thing on the page a reader must not miss */
+    .caution { background: var(--warm1); border-radius: var(--radius); padding: 1.5rem 1.8rem; margin: 2rem 0; }
+    .caution p { margin: 0; line-height: 1.8; }
+
+    /* Footer */
+    footer { text-align: center; padding: 2rem; font-size: 0.88rem; color: var(--muted); background: white; }
+    footer p + p { margin-top: 0.25rem; }
+    footer a { color: var(--warm4); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer .brand { font-family: var(--serif); font-weight: 700; color: var(--brown); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html">AGRICAF</a>
+  <a class="back" href="index.html">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Back
+  </a>
+</nav>
+
+<main>
+  <span class="tag">Guide</span>
+  <h1>How to Read the <em>Explanations</em></h1>
+
+  <p class="summary">
+    Every AGRICAF forecast comes with a set of charts showing what stood behind it. They are built for people who want the reasoning, not the mathematics, and nothing on this page assumes you have any. If you read only one thing, read the last section.
+  </p>
+
+  <h2>What the forecast itself shows</h2>
+  <p>
+    The chart at the top of each commodity page runs from the past into the future. The black line is what the price actually did. The coloured line is what AGRICAF expects it to do over the coming year. The shaded band around it is the room for error: the forecast is expected to land inside that band about four times in five. It widens the further ahead you look, because the further ahead you look, the less anyone knows.
+  </p>
+  <p>
+    Prices here are always given as a change against the same month one year earlier. Zero means the price is where it was a year ago. Plus twenty means it is twenty per cent higher.
+  </p>
+
+  <h2>The four questions</h2>
+  <p>
+    The explanation charts answer four different questions. They go from the widest view to the narrowest, so start at the top and go down only as far as you need.
+  </p>
+
+  <div class="ask">
+    <strong>What usually moves this price?</strong>
+    <span>Everything at once: every month of the year, and every distance ahead. Use it to see which handful of things do most of the work.</span>
+  </div>
+  <div class="ask">
+    <strong>What moved it in a particular month?</strong>
+    <span>Narrows to one calendar month. Use it to see whether something matters every year, or only in unusual ones.</span>
+  </div>
+  <div class="ask">
+    <strong>What happens as one thing changes?</strong>
+    <span>Follows a single factor. Use it to see whether a small change matters, or only a large one.</span>
+  </div>
+  <div class="ask">
+    <strong>What only matters in combination?</strong>
+    <span>Some things matter on their own. Others only when they happen at the same time as something else. This is the view that separates the two.</span>
+  </div>
+
+  <h2>The controls</h2>
+  <p>
+    Two rows of buttons sit beside most charts. The row marked <strong>H1</strong> to <strong>H12</strong> is how far ahead the forecast was made: <strong>H3</strong> means the forecast was made three months before the month it describes. The row of single letters is the month being forecast, from January to December. Switch any of them off to clear the view.
+  </p>
+
+  <h2>Reading the colours</h2>
+  <p>
+    There are two views, and colour means something different in each. Check which one you are looking at before reading the colours.
+  </p>
+
+  <p><span class="label">On the “Relative Intensity” view, colour is how much</span></p>
+  <div class="key"><i style="background:#ace600"></i><p>Barely mattered here.</p></div>
+  <div class="key"><i style="background:#FFAA33"></i><p>Mattered a fair amount.</p></div>
+  <div class="key"><i style="background:#b10026"></i><p>Did most of the work.</p></div>
+
+  <p style="margin-top:1.6rem"><span class="label">On the “Impact” view, colour is which way</span></p>
+  <div class="key"><i style="background:#053061"></i><p>Pushed the price <strong>down</strong>.</p></div>
+  <div class="key"><i style="background:#F7F7F7"></i><p>Pushed it neither way.</p></div>
+  <div class="key"><i style="background:#67001F"></i><p>Pushed the price <strong>up</strong>.</p></div>
+
+  <div class="key" style="margin-top:1.6rem"><i style="background:#ece8e0"></i><p>On either view, a plain beige square means this factor was not used for that month and distance at all. It is an absence, not a low score.</p></div>
+
+  <h2>Reading the names</h2>
+  <p>
+    Every factor is written as a change against the same month a year earlier, and the names follow one pattern.
+  </p>
+  <table>
+    <tr><td>Wheat price, 1 month ago</td><td>The crop's own price, one month before the forecast was made. Prices carry their own momentum.</td></tr>
+    <tr><td>USA stocks</td><td>How much the United States had in store, against a year earlier.</td></tr>
+    <tr><td>Argentina production</td><td>How much Argentina grew, against a year earlier. Some pages say yield instead, which is how much per hectare.</td></tr>
+    <tr><td>Oil price, 12 months ago</td><td>Another commodity's price. Oil matters because it moves the cost of growing and shipping.</td></tr>
+    <tr><td>China exchange rate, 2 months ago</td><td>A currency against the US dollar. Commodities are priced in dollars, so currencies change what a buyer really pays.</td></tr>
+    <tr><td>… , year before</td><td>The same figure, one year further back again.</td></tr>
+  </table>
+
+  <h2>What these charts do not say</h2>
+  <div class="caution">
+    <p>
+      These charts show what the forecast <strong>leaned on</strong>. They do not show what causes prices. When two things tend to move together, such as a currency and an oil price, the method cannot tell which of them the forecast was really following, and it may credit either one. So a factor near the top is a good place to start asking questions. It is not an answer, and it is not evidence that changing that factor would change the price.
+    </p>
+  </div>
+  <p>
+    One more honest limit. AGRICAF predicts the direction of a price move considerably better than its size, and the gap grows the further ahead you look. Inside about four months the size is worth reading. Beyond about eight months, treat the direction as the useful part and the exact number as a rough guide.
+  </p>
+</main>
+
+<footer>
+  <p class="brand">AGRICAF</p>
+  <p>Agricultural Commodity Analysis and Forecasts</p>
+  <p>Rotem Zelingher · Austrian Institute of Economic Research (WIFO) · <a href="https://github.com/RotemZel" target="_blank" rel="noopener">GitHub</a></p>
+</footer>
+
+</body>
+</html>
