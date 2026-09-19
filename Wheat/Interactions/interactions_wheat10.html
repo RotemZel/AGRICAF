@@ -14,37 +14,35 @@
     height: 100vh;
     overflow: hidden;
   }
+  /* The sidebar carries the whole explanation of the figure, so it is set on
+     white with dark text: on the dark panel it used to have, 10.5px grey was
+     not comfortably readable. */
   #sidebar {
-    width: 210px; flex-shrink: 0; background: #1a1a1a; color: #ddd;
-    display: flex; flex-direction: column; padding: 18px 14px; overflow-y: auto;
+    width: 230px; flex-shrink: 0; background: #ffffff; color: #444;
+    border-right: 1px solid #e0dccf;
+    display: flex; flex-direction: column; padding: 18px 16px; overflow-y: auto;
   }
   #sidebar h1 {
-    font-size: 14px; font-weight: 700; color: #fff;
+    font-size: 14px; font-weight: 700; color: #1a1a1a;
     letter-spacing: 0.05em; margin-bottom: 2px;
   }
-  #sidebar .tagline { font-size: 10px; color: #777; margin-bottom: 18px; line-height: 1.4; }
+  #sidebar .tagline { font-size: 10px; color: #8a8378; margin-bottom: 18px; line-height: 1.45; }
   .section-lbl {
     font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em;
-    color: #555; margin: 14px 0 6px;
+    color: #8a8378; margin: 16px 0 5px;
   }
-  .how   { font-size: 10.5px; line-height: 1.6; color: #8e8e8e; }
+  .hint  { font-size: 10px; color: #8a8378; line-height: 1.5; margin-bottom: 7px; }
+  .how   { font-size: 11px; line-height: 1.65; color: #4a4a4a; }
   .how p { margin-bottom: 8px; }
-  .how b { color: #ccc; font-weight: 600; }
+  .how b { color: #1a1a1a; font-weight: 600; }
   .pills { display: flex; flex-wrap: wrap; gap: 4px; }
   .pill {
-    padding: 3px 8px; border-radius: 20px; border: 1px solid #333;
-    background: #272727; color: #bbb; font-size: 11px; cursor: pointer;
-    transition: background 0.15s;
+    padding: 3px 9px; border-radius: 20px; border: 1px solid #cfc9ba;
+    background: #f3f0e6; color: #4a4a4a; font-size: 11px; cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
   }
-  .pill:hover { background: #333; }
-  .pill.off   { opacity: 0.22; }
-  .month-row {
-    display: flex; align-items: center; gap: 8px; padding: 3px 2px;
-    cursor: pointer; user-select: none; border-radius: 4px; transition: opacity 0.15s;
-  }
-  .month-row.off { opacity: 0.28; }
-  .month-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
-  .month-name { font-size: 11px; color: #ccc; }
+  .pill:hover { background: #e6e1d2; }
+  .pill.off   { opacity: 0.35; }
   #main {
     flex: 1; display: flex; flex-direction: column;
     align-items: center; overflow: hidden; padding: 18px 10px 10px;
@@ -90,10 +88,10 @@
        first.</p>
   </div>
 
-  <div class="section-lbl">Forecast Horizon</div>
+  <div class="section-lbl">Select Forecast Horizon</div>
+  <div class="hint">L3 shows the forecast made three months ahead. Click a
+    horizon to add it to the figure or remove it.</div>
   <div class="pills" id="lag-pills"></div>
-  <div class="section-lbl">Forecast Month</div>
-  <div id="month-swatches"></div>
 </div>
 <div id="main">
   <div id="chart-header">
@@ -121,13 +119,14 @@ const activeCrop = Object.keys(DATA)[0];
 const byLag      = DATA[activeCrop];
 const allLags    = Object.keys(byLag).map(Number).sort((a,b)=>a-b);
 
-// A file holds one forecast month, so the month panel is built from what is
-// really in it rather than from all twelve.
+// A file holds one forecast month, named in the subtitle, so there is no month
+// control: activeMonths simply takes whatever months the file turned out to
+// carry, and draw() filters against it as it always has.
 const MONTHS_PRESENT = [...new Set(
   Object.values(byLag).flatMap(fd => fd.edges.map(e => e.month)))].sort((a,b)=>a-b);
 
 let activeLags   = new Set();   // populated on first buildControls()
-let activeMonths = new Set(MONTHS_PRESENT);
+const activeMonths = new Set(MONTHS_PRESENT);
 
 const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
 function buildControls() {
@@ -154,35 +153,6 @@ function buildControls() {
     };
     ld.appendChild(b);
   });
- 
-  // -- Month rows, one per month the file actually holds (built once;
-  //    classes synced on subsequent calls)
-  const md = document.getElementById("month-swatches");
-  if (md.children.length===0) {
-    MONTHS_PRESENT.forEach(m => {
-      const row = document.createElement("div");
-      row.className = "month-row"+(activeMonths.has(m)?"":" off");
-      row.dataset.m = m;
-      row.innerHTML =
-        `<div class="month-dot" style="background:${MONTH_COLORS[m-1]}"></div>`+
-        `<span class="month-name">${MONTH_NAMES[m-1]}</span>`;
-      row.onclick = () => {
-        if (activeMonths.has(m)) {
-          if (activeMonths.size === 1) return;   // keep at least one
-          activeMonths.delete(m);
-        } else {
-          activeMonths.add(m);
-        }
-        row.classList.toggle("off", !activeMonths.has(m));
-        draw();
-      };
-      md.appendChild(row);
-    });
-  } else {
-    [...md.children].forEach(r => {
-      r.classList.toggle("off", !activeMonths.has(+r.dataset.m));
-    });
-  }
 }
 function draw() {
   const svgEl = document.getElementById("heb-svg");
