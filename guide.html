@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AGRICAF · How to Read the Explanations</title>
+  <title>AGRICAF · Reading the Explanations</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
     /* Settings: the colours, fonts and sizes the whole page is built from */
@@ -62,10 +62,13 @@
     main h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.15; margin-bottom: 2rem; }
     h1 em { color: var(--warm4); }
     main h2 { font-size: 1.35rem; margin: 3rem 0 1rem; }
+    main h3 { font-size: 1.02rem; margin: 1.8rem 0 0.5rem; }
     main p { line-height: 1.85; margin-bottom: 1rem; }
+    main a { color: var(--warm5); text-decoration: none; border-bottom: 1px solid var(--warm2); }
+    main a:hover { border-bottom-color: var(--warm4); }
     .summary { background: white; border: 1px solid var(--warm2); border-radius: var(--radius); box-shadow: 0 2px 10px var(--shadow); font-size: 1.05rem; line-height: 1.9; border-left: 4px solid var(--warm3); padding: 1.8rem 2rem; margin-bottom: 1rem; }
 
-    /* A question and the answer it leads to */
+    /* A question the view is built to answer */
     .ask { border-left: 3px solid var(--warm2); padding: 0.2rem 0 0.2rem 1.2rem; margin: 1.4rem 0; }
     .ask strong { display: block; font-family: var(--serif); font-size: 1.08rem; color: var(--brown); margin-bottom: 0.3rem; }
     .ask span { color: var(--muted); font-size: 0.95rem; line-height: 1.7; }
@@ -95,6 +98,12 @@
     .caution { background: var(--warm1); border-radius: var(--radius); padding: 1.5rem 1.8rem; margin: 2rem 0; }
     .caution p { margin: 0; line-height: 1.8; }
 
+    /* Numbered limitations, and the reference list */
+    .lim { margin: 1rem 0 1.5rem 1.2rem; }
+    .lim li { line-height: 1.8; margin-bottom: 0.7rem; padding-left: 0.3rem; }
+    .refs { list-style: none; font-size: 0.9rem; line-height: 1.7; color: var(--muted); margin-top: 1rem; }
+    .refs li { padding-left: 1.5rem; text-indent: -1.5rem; margin-bottom: 0.7rem; }
+
     /* Footer */
     footer { text-align: center; padding: 2rem; font-size: 0.88rem; color: var(--muted); background: white; }
     footer p + p { margin-top: 0.25rem; }
@@ -115,99 +124,151 @@
 
 <main>
   <span class="tag">Guide</span>
-  <h1>How to Read the <em>Explanations</em></h1>
+  <h1>Reading the AGRICAF <em>Explanations</em></h1>
 
   <p class="summary">
-    Every AGRICAF forecast comes with a set of charts showing what stood behind it. They are built for people who want the reasoning, not the mathematics, and nothing on this page assumes you have any. If you read only one thing, read the last section.
+    AGRICAF publishes twelve-month-ahead price forecasts for five internationally traded agricultural commodities, and accompanies each forecast with a record of the predictors the published model relied on to produce it. This page sets out how that record is computed and how it should be read.
   </p>
 
-  <h2>What the forecast itself shows</h2>
+  <h2>About the tool and its methodology</h2>
   <p>
-    The chart at the top of each commodity page runs from the past into the future. The black line is what the price actually did. The coloured line is what AGRICAF expects it to do over the coming year. The shaded band around it is the room for error. It widens the further ahead you look, because the further ahead you look, the less anyone knows.
+    Every commodity page carries two distinct products. The first is a forecast of the price change over the coming twelve months. The second is a set of diagnostics describing the behaviour of the model that produced it. The diagnostics are the subject of this guide.
   </p>
   <p>
-    Prices here are always given as a change against the same month one year earlier. Zero means the price is where it was a year ago. Plus twenty means it is twenty per cent higher.
+    AGRICAF fits a panel of candidate specifications for every combination of commodity, calendar month and forecast horizon. Each combination is treated as a separate estimation problem, and the specification published for that combination is the one with the lowest leave-one-year-out absolute error. Because the winning specification differs across combinations, the explanation layer is model-agnostic by necessity: it treats the published model as a black box and probes its behaviour rather than reading its coefficients.
   </p>
   <p>
-    The band is built to hold the outcome about four times in five. Checked against the record it has managed closer to seven times in ten, and the misses bunch together in the most turbulent years, which are the ones you would most want it to cover. Read it as a guide to how uncertain the number is, not as a promise.
+    Four post-hoc methods are applied, all through the <a href="https://doi.org/10.21105/joss.00786" target="_blank" rel="noopener">iml</a> package. <strong>Permutation importance</strong> measures the loss in accuracy when a predictor is shuffled. <strong>Shapley values</strong> allocate the deviation of a single prediction from the average prediction across the predictors that produced it. <strong>LIME</strong> fits a local surrogate around each prediction and is reported alongside the Shapley results as a cross-check rather than as a substitute. <strong>Friedman's H-statistic</strong> quantifies pairwise interaction. Formal definitions are given in the sections below, and sources in the references.
+  </p>
+  <p>
+    Two properties of the procedure are worth stating before any figure is read. First, the explanations are generated on a rolling basis, and no explanation is computed on the year it explains: each year's attribution comes from a model fitted only on earlier years. Second, several forecasting families in the AGRICAF panel, the time-series specifications and the recurrent networks among them, expose no learner that these methods can interrogate. Where one of those families is published for a combination, the best explainable specification for the same combination is explained in its place. The diagnostics then describe a close relative of the published forecast rather than the published forecast itself.
   </p>
 
-  <h2>The four questions</h2>
+  <h2>The forecast and its interval</h2>
   <p>
-    The explanation charts answer four different questions. They go from the widest view to the narrowest, so start at the top and go down only as far as you need.
+    The chart at the top of each commodity page runs from the historical record into the forecast period. The solid dark line is the realised price change. The coloured line is the central forecast over the coming twelve months. The shaded band is the prediction interval, and it widens with the horizon.
+  </p>
+  <p>
+    All prices are expressed as a change against the same calendar month one year earlier. A value of zero means the price is level with a year ago; a value of twenty means it is twenty per cent higher. This convention removes the seasonal pattern that would otherwise dominate a monthly agricultural series, and it is the quantity the models are estimated on.
+  </p>
+  <p>
+    The band is constructed for eighty per cent coverage. Evaluated against the historical record it has achieved closer to seventy per cent, and the shortfall is concentrated in the most volatile years, which are precisely the years in which an interval matters most. The band should therefore be read as an indication of how uncertain the central number is, and not as a calibrated guarantee.
+  </p>
+
+  <h2>Levels of explanation</h2>
+  <p>
+    The diagnostics are organised into levels of increasing granularity. A user scanning for early-warning signals needs a different view from one investigating a particular episode, and each level draws on a different aggregation of the same underlying quantities.
   </p>
 
   <div class="ask">
-    <strong>What usually moves this price?</strong>
-    <span>Everything at once: every month of the year, and every distance ahead. Use it to see which handful of things do most of the work.</span>
+    <strong>Level 1. Global overview</strong>
+    <span>Aggregates across all forecast years to produce one value per predictor for each month-and-horizon cell. The result is the typical attribution rather than the attribution in any one year. Answers questions of the form: which predictors drive wheat prices in general?</span>
   </div>
   <div class="ask">
-    <strong>What moved it in a particular month?</strong>
-    <span>Narrows to one calendar month. Use it to see whether something matters every year, or only in unusual ones.</span>
+    <strong>Level 2. Month and horizon specific</strong>
+    <span>Fixes one calendar month and one or more horizons, and retains the individual values from each forecast year instead of collapsing them to a mean. This preserves the year-to-year variability that Level 1 averages away, and so distinguishes a predictor that matters consistently from one that matters only in unusual years. Answers questions of the form: what drives the three-month-ahead maize forecast made each September, and how stable are those drivers?</span>
   </div>
   <div class="ask">
-    <strong>What happens as one thing changes?</strong>
-    <span>Follows a single factor. Use it to see whether a small change matters, or only a large one.</span>
-  </div>
-  <div class="ask">
-    <strong>What only matters in combination?</strong>
-    <span>Some things matter on their own. Others only when they happen at the same time as something else. This is the view that separates the two.</span>
+    <strong>Level 3. Predictor specific</strong>
+    <span>Follows a single predictor for a chosen month and horizon, pairing each historical observation of that predictor with its attribution. The resulting mapping exposes non-linearity and threshold effects: a moderate production shortfall may carry little price consequence while a large one carries a disproportionate consequence. Answers questions of the form: how do changes in Brazilian soybean production affect the six-month-ahead price forecast?</span>
   </div>
 
-  <h2>The controls</h2>
+  <h2>Reading the colour scales</h2>
   <p>
-    Two rows of buttons sit beside most charts. The row marked <strong>H1</strong> to <strong>H12</strong> is how far ahead the forecast was made: <strong>H3</strong> means the forecast was made three months before the month it describes. The row of single letters is the month being forecast, from January to December. Switch any of them off to clear the view.
+    Two colour scales appear across the diagnostics and they encode different quantities. Establish which scale a figure uses before reading it.
   </p>
 
-  <h2>Reading the colours</h2>
+  <h3>Relative Intensity</h3>
   <p>
-    There are two views, and colour means something different in each. Check which one you are looking at before reading the colours.
+    Relative Intensity measures how much of a forecast's total explanatory magnitude a given predictor accounts for. Writing <em>a</em><sub>k,t</sub> for the attribution of predictor <em>k</em> at observation <em>t</em>, across <em>K</em> predictors:
   </p>
-
-  <p><span class="label">“Relative Intensity”: how much did this factor matter, compared with the others?</span></p>
+  <div class="eq">intensity<sub>k,t</sub> = |a<sub>k,t</sub>| &divide; &Sigma;<sub>j=1..K</sub> |a<sub>j,t</sub>|</div>
   <div class="scale">
     <div class="bar" style="background:linear-gradient(to right,#ace600,#FFAA33,#b10026)"></div>
     <div class="ends"><span>0</span><span>1</span></div>
   </div>
-  <div class="eq">intensity = size of this factor's effect ÷ size of every factor's effect added up</div>
   <p>
-    It runs from 0 to 1 and the column adds up to 1. An intensity of 0.35 means this factor accounted for 35% of everything the model used for that forecast, whichever way it pushed.
+    Intensity runs from 0 to 1 and sums to 1 across the predictors of a given forecast. An intensity of 0.35 means that predictor accounted for thirty-five per cent of the model's total explanatory magnitude for that forecast, regardless of direction. Because the measure is taken on absolute values, it is silent on whether the predictor raised or lowered the forecast.
+  </p>
+  <p>
+    The share construction has a direct consequence for interpretation. Since the shares sum to one, a single predictor at the red end of the scale implies that every other predictor sits near the green end. A column of uniformly moderate values is not possible for more than two or three predictors at once. Concentration is therefore visible at a glance, and a concentrated column is a signal that the forecast rests on a narrow base.
   </p>
 
-  <p style="margin-top:1.8rem"><span class="label">“Impact”: which way did this factor push the forecast, given the value it took?</span></p>
+  <h3>Impact</h3>
+  <p>
+    Impact combines the attribution with the direction of the predictor's own movement, so that the sign reports the direction of the estimated relationship rather than the direction of the contribution alone:
+  </p>
+  <div class="eq">impact<sub>k,t</sub> = sign(x<sub>k,t</sub>) &middot; a<sub>k,t</sub></div>
   <div class="scale">
     <div class="bar" style="background:linear-gradient(to right,#053061,#2971B1,#6AACD0,#C1DDEB,#F7F7F7,#FACDB5,#E58267,#BB2933,#67001F)"></div>
     <div class="ends"><span>strongly negative</span><span>0</span><span>strongly positive</span></div>
   </div>
-  <div class="eq">impact = whether the factor rose or fell × its effect</div>
   <p>
-    When the factor's value and its effect carry the same sign, the impact is positive. When their signs differ, it is negative. The scale runs outwards from zero in the middle: the darker the colour, the stronger the impact, and a pale square means the factor barely moved the forecast either way. A factor that fell while the price rose, and a factor that rose while the price fell, are both the same kind of inverse relationship and both show blue.
+    The interpretation is joint. Where the predictor value and its attribution carry the same sign, the impact is positive. Where their signs differ, it is negative. A predictor that fell while pushing the forecast up, and one that rose while pushing the forecast down, both describe an inverse relationship and both appear blue. The scale runs outwards from zero at the centre: the darker the colour, the stronger the impact, and a pale cell indicates a predictor that moved the forecast very little in either direction.
   </p>
 
-  <div class="key" style="margin-top:1.6rem"><i style="background:#ece8e0"></i><p>On either view, a plain beige square means this factor was not used for that month and distance at all. It is an absence, not a low score.</p></div>
+  <div class="key" style="margin-top:1.6rem"><i style="background:#ece8e0"></i><p>On either scale, a neutral beige cell indicates that the predictor was not selected for that month and horizon. It records an absence, not a low value.</p></div>
 
-  <h2>Reading the names</h2>
+  <h2>Reading the interaction diagram</h2>
   <p>
-    Every factor is written as a change against the same month a year earlier, and the names follow one pattern.
+    The interaction diagram is a hierarchical edge bundling layout. Each node is a predictor, coloured by type, with the four types labelled around the perimeter. An edge between two nodes carries Friedman's H-statistic for that pair, averaged over the explained years.
   </p>
-  <table>
-    <tr><td>Wheat price, 1 month ago</td><td>The crop's own price, one month before the forecast was made. Prices carry their own momentum.</td></tr>
-    <tr><td>USA stocks</td><td>How much the United States had in store, against a year earlier.</td></tr>
-    <tr><td>Argentina production</td><td>How much Argentina grew, against a year earlier. Some pages say yield instead, which is how much per hectare.</td></tr>
-    <tr><td>Oil price, 12 months ago</td><td>Another commodity's price. Oil matters because it moves the cost of growing and shipping.</td></tr>
-    <tr><td>China exchange rate, 2 months ago</td><td>A currency against the US dollar. Commodities are priced in dollars, so currencies change what a buyer really pays.</td></tr>
-    <tr><td>… , year before</td><td>The same figure, one year further back again.</td></tr>
-  </table>
-
-  <h2>What these charts do not say</h2>
+  <p>
+    H is computed from the model's partial dependence surfaces. For predictors <em>j</em> and <em>k</em>, it is the share of the variance of their two-way surface that cannot be reproduced by adding their two one-way effects. It runs from 0, where the pair acts additively and the model's response to one predictor does not depend on the level of the other, to 1, where the pair's effect is entirely joint.
+  </p>
+  <p>
+    Computing H for every pair is quadratic in the reference sample, so AGRICAF screens the candidates: a predictor is paired against the rest only if it holds at least two per cent of that combination's permutation importance, averaged over the explained years. Predictors below the threshold do not appear as anchors.
+  </p>
   <div class="caution">
     <p>
-      These charts show what the forecast <strong>leaned on</strong>. They do not show what causes prices. When two things tend to move together, such as a currency and an oil price, the method cannot tell which of them the forecast was really following, and it may credit either one. So a factor near the top is a good place to start asking questions. It is not an answer, and it is not evidence that changing that factor would change the price.
+      <strong>H is normalised by the pair's own joint effect, not by the model's total.</strong> A high value therefore identifies a relationship that is largely interactive; it does not identify a pair that is influential in absolute terms. Two predictors of minor overall importance can record a high H because the denominator is their own small surface. Read the diagram alongside the intensity figures rather than in place of them. Note also that edge thickness is rescaled to the range currently displayed, so thickness is comparable within a view but not across views.
     </p>
   </div>
+
+  <h2>Reading the predictor names</h2>
   <p>
-    One more honest limit. AGRICAF predicts the direction of a price move considerably better than its size, and the gap grows the further ahead you look. Inside about four months the size is worth reading. Beyond about eight months, treat the direction as the useful part and the exact number as a rough guide.
+    Every predictor is expressed as a change against the same calendar month one year earlier, and the names follow a single convention. A suffix in brackets gives the lag at which the predictor enters the model.
   </p>
+  <table>
+    <tr><td>Wheat price (1m)</td><td>The commodity's own price, lagged one month relative to the point of forecast.</td></tr>
+    <tr><td>Oil price (12m)</td><td>Another commodity's price at the stated lag. Energy prices enter through production and freight costs.</td></tr>
+    <tr><td>Fertilizer index (3m)</td><td>A price index at the stated lag.</td></tr>
+    <tr><td>Brazil FX (6m)</td><td>A bilateral exchange rate against the US dollar. Internationally traded commodities are quoted in dollars, so the currency alters the price faced by a buyer or received by a producer.</td></tr>
+    <tr><td>USA stocks</td><td>Closing stocks held by the stated region, against a year earlier.</td></tr>
+    <tr><td>Argentina prod.</td><td>Production by the stated region, against a year earlier. Some commodities are modelled on yield instead, which is output per hectare.</td></tr>
+    <tr><td>… (prev)</td><td>The same quantity taken one further year back.</td></tr>
+  </table>
+
+  <h2>Limitations</h2>
+  <p>
+    The diagnostics describe the behaviour of a fitted model. They are not estimates of an economic structure, and the following constraints apply to any use of them.
+  </p>
+  <ol class="lim">
+    <li><strong>Attribution is not identification.</strong> These figures report what the forecast leaned on, not what moves prices. Where two predictors move together, as an exchange rate and an energy price commonly do, the method cannot determine which the model was following and may credit either. A predictor near the top of a ranking is a reasonable place to begin an investigation, not the conclusion of one.</li>
+    <li><strong>Correlated predictors weaken the attribution itself.</strong> The standard Shapley estimator assumes predictors can be varied independently. Where they cannot, attributions are distributed across correlated predictors in a way that need not reflect the model's actual dependence (<a href="https://doi.org/10.1016/j.artint.2021.103502" target="_blank" rel="noopener">Aas et al., 2021</a>).</li>
+    <li><strong>Permutation-based measures evaluate the model off the observed data.</strong> Shuffling a predictor creates combinations that never occurred, so the model is scored in regions it was never fitted on (<a href="https://doi.org/10.1007/s11222-021-10057-z" target="_blank" rel="noopener">Hooker et al., 2021</a>).</li>
+    <li><strong>Post-hoc explanations carry their own uncertainty.</strong> Sampling-based attributions vary between runs and that variation is rarely reported (<a href="https://proceedings.neurips.cc/paper/2021/hash/4e246a381baf2ce038b3b0f82c7d6fb4-Abstract.html" target="_blank" rel="noopener">Slack et al., 2021</a>). For decisions with material consequences, <a href="https://doi.org/10.1038/s42256-019-0048-x" target="_blank" rel="noopener">Rudin (2019)</a> argues for models that are interpretable by construction rather than explained after the fact.</li>
+    <li><strong>Where the published specification is not explainable, a stand-in is explained.</strong> See the methodology section above. The diagnostics then characterise a comparable model, not the published one.</li>
+    <li><strong>Direction is forecast more reliably than magnitude, and the gap widens with the horizon.</strong> Within roughly four months the magnitude carries information. Beyond roughly eight months, the direction is the usable part and the point estimate should be treated as indicative.</li>
+  </ol>
+
+  <h2>References</h2>
+  <ul class="refs">
+    <li>Aas, K., Jullum, M. and Løland, A. (2021). Explaining individual predictions when features are dependent: More accurate approximations to Shapley values. <em>Artificial Intelligence</em>, 298, 103502. <a href="https://doi.org/10.1016/j.artint.2021.103502" target="_blank" rel="noopener">doi:10.1016/j.artint.2021.103502</a></li>
+    <li>Breiman, L. (2001). Random Forests. <em>Machine Learning</em>, 45(1), 5–32. <a href="https://doi.org/10.1023/A:1010933404324" target="_blank" rel="noopener">doi:10.1023/A:1010933404324</a></li>
+    <li>Fisher, A., Rudin, C. and Dominici, F. (2019). All Models are Wrong, but Many are Useful: Learning a Variable's Importance by Studying an Entire Class of Prediction Models Simultaneously. <em>Journal of Machine Learning Research</em>, 20(177), 1–81. <a href="http://jmlr.org/papers/v20/18-760.html" target="_blank" rel="noopener">jmlr.org/papers/v20/18-760.html</a></li>
+    <li>Friedman, J. H. and Popescu, B. E. (2008). Predictive learning via rule ensembles. <em>The Annals of Applied Statistics</em>, 2(3), 916–954. <a href="https://doi.org/10.1214/07-AOAS148" target="_blank" rel="noopener">doi:10.1214/07-AOAS148</a></li>
+    <li>Holten, D. (2006). Hierarchical Edge Bundles: Visualization of Adjacency Relations in Hierarchical Data. <em>IEEE Transactions on Visualization and Computer Graphics</em>, 12(5), 741–748. <a href="https://doi.org/10.1109/TVCG.2006.147" target="_blank" rel="noopener">doi:10.1109/TVCG.2006.147</a></li>
+    <li>Hooker, G., Mentch, L. and Zhou, S. (2021). Unrestricted Permutation Forces Extrapolation: Variable Importance Requires at Least One More Model. <em>Statistics and Computing</em>, 31(6), 82. <a href="https://doi.org/10.1007/s11222-021-10057-z" target="_blank" rel="noopener">doi:10.1007/s11222-021-10057-z</a></li>
+    <li>Lundberg, S. M. and Lee, S.-I. (2017). A unified approach to interpreting model predictions. <em>Advances in Neural Information Processing Systems</em>, 30, 4768–4777.</li>
+    <li>Molnar, C. (2022). <em>Interpretable Machine Learning: A Guide for Making Black Box Models Explainable</em>, 2nd edn. <a href="https://christophm.github.io/interpretable-ml-book" target="_blank" rel="noopener">christophm.github.io/interpretable-ml-book</a></li>
+    <li>Molnar, C., Casalicchio, G. and Bischl, B. (2018). iml: An R package for interpretable machine learning. <em>Journal of Open Source Software</em>, 3(26), 786. <a href="https://doi.org/10.21105/joss.00786" target="_blank" rel="noopener">doi:10.21105/joss.00786</a></li>
+    <li>Ribeiro, M. T., Singh, S. and Guestrin, C. (2016). "Why Should I Trust You?": Explaining the Predictions of Any Classifier. In <em>Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining</em>, 1135–1144. <a href="https://doi.org/10.1145/2939672.2939778" target="_blank" rel="noopener">doi:10.1145/2939672.2939778</a></li>
+    <li>Rudin, C. (2019). Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead. <em>Nature Machine Intelligence</em>, 1, 206–215. <a href="https://doi.org/10.1038/s42256-019-0048-x" target="_blank" rel="noopener">doi:10.1038/s42256-019-0048-x</a></li>
+    <li>Shapley, L. S. (1952). <em>A Value for N-Person Games</em>. RAND Corporation. <a href="https://doi.org/10.7249/P0295" target="_blank" rel="noopener">doi:10.7249/P0295</a></li>
+    <li>Slack, D., Hilgard, S., Singh, S. and Lakkaraju, H. (2021). Reliable Post hoc Explanations: Modeling Uncertainty in Explainability. <em>Advances in Neural Information Processing Systems</em>, 34, 9391–9404.</li>
+    <li>Zelingher, R. and Makowski, D. (2024). Investigating and forecasting the impact of crop production shocks on global commodity prices. <em>Environmental Research Letters</em>, 19(1), 014026. <a href="https://doi.org/10.1088/1748-9326/ad0dda" target="_blank" rel="noopener">doi:10.1088/1748-9326/ad0dda</a></li>
+  </ul>
 </main>
 
 <footer>
