@@ -277,7 +277,7 @@ function draw() {
       };
       const panel = document.createElement("div"); panel.className = "facet-panel";
       const hdr   = document.createElement("div"); hdr.className   = "facet-header";
-      hdr.textContent = l+(l===1 ? " month ahead" : " months ahead");
+      hdr.textContent = l+"m ahead";
       panel.appendChild(hdr);
       const svg = d3.select(panel).append("svg")
         .attr("class","heatmap-svg").attr("width",svgW).attr("height",svgH);
