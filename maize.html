@@ -590,47 +590,47 @@
     Each figure below opens a detailed, interactive chart, organised from the broadest view down to the most specific. If you have not read one before, start with the <a href="guide.html">guide to reading them</a>.
   </p>
 
-  <div class="level-grid">
+   <div class="level-grid">
 
-    <!-- Level 1a: Global overview (SHAP) -->
+    <!-- Global overview -->
     <div class="level-card" onclick="openChart('global')">
-      <span class="level-badge">Level 1 · Global overview</span>
+      <span class="level-badge">Global overview</span>
       <span class="level-title">What drives Maize prices overall?</span>
-      <p class="level-question">"Which factors matter most, across all years and time horizons?"</p>
-      <p class="level-desc">Intensity + Impact | Using Shapley values</p>
+      <p class="level-question">The typical picture across every forecast month and horizon, averaged over all the years AGRICAF has explained.</p>
+      <p class="level-desc">Relative Intensity and Impact · Shapley values</p>
       <span class="level-arrow">Open chart →</span>
     </div>
 
-    <!-- Level 2a: Month and horizon specific (SHAP) -->
+    <!-- By month and horizon -->
     <div class="level-card" onclick="openChart('local')">
-      <span class="level-badge">Level 2 · By month and horizon</span>
-      <span class="level-title">What drives prices for a specific month and horizon?</span>
-      <p class="level-question">"Focuses on a chosen calendar month and horizon"</p>
-      <p class="level-desc">Intensity + Impact | Using Shapley values</p>
+      <span class="level-badge">By month and horizon</span>
+      <span class="level-title">How steady are those drivers from year to year?</span>
+      <p class="level-question">One forecast month at a time, with each year kept separate, so a predictor that matters consistently can be told from one that mattered in a single year.</p>
+      <p class="level-desc">Relative Intensity and Impact · Shapley values</p>
       <span class="level-arrow">Open chart →</span>
     </div>
 
-    <!-- Level 3: Factor specific (PDP) -->
+    <!-- Single factor -->
     <div class="level-card" onclick="openChart('pdp')">
-      <span class="level-badge">Level 3 · Single factor</span>
+      <span class="level-badge">Single factor</span>
       <span class="level-title">How does one factor affect the forecast?</span>
-      <p class="level-question">"Zooms in on a single factor"</p>
-      <p class="level-desc">Show how its value relates to its influence on the forecast</p>
+      <p class="level-question">Follows one predictor, pairing its value in each year with the contribution the model gave it, which is where thresholds show up.</p>
+      <p class="level-desc">Shapley values against the predictor&rsquo;s own value</p>
       <span class="level-arrow">Open chart →</span>
     </div>
 
-    <!-- Interactions (clickable card that opens overlay with navigation) -->
+    <!-- Interactions -->
     <div class="level-card" onclick="openChart('interactions')">
-      <span class="level-badge">Levels 1, 2, 4 · Interactions</span>
-      <span class="level-title">How do predictors react to each other</span>
-      <p class="level-question">"Do predictors identify price independently or amplify each other?"</p>
-      <p class="level-desc">Explore how pairs of factors interact and jointly influence the price forecast.</p>
+      <span class="level-badge">Interactions</span>
+      <span class="level-title">Which factors matter only in combination?</span>
+      <p class="level-question">Pairs of predictors whose joint effect cannot be reproduced by adding their two separate effects.</p>
+      <p class="level-desc">Friedman&rsquo;s H · hierarchical edge bundling</p>
       <span class="level-arrow">Open charts →</span>
     </div>
 
   </div>
 </div>
-<<!-- ── Fullscreen overlay, shared by the four charts ── -->
+<!-- ── Fullscreen overlay, shared by the four charts ── -->
 <div id="chart-overlay" class="overlay" onclick="if(event.target===this)closeChart()">
   <div class="overlay-inner">
     <div class="overlay-header">
@@ -680,7 +680,7 @@
   </p>
 </footer>
 
-<<script>
+<script>
   // The overlays are anchored to the viewport, so they are moved out of the
   // page container and onto the body before either can be opened.
   document.querySelectorAll('.overlay').forEach(function (o) { document.body.appendChild(o); });
