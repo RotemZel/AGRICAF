@@ -29,8 +29,6 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
   text-transform: uppercase; letter-spacing: .1em; }
 .sec-lbl { font-size: 0.55rem; text-transform: uppercase; letter-spacing: .12em;
   color: var(--muted); margin-bottom: 7px; }
-.hint  { font-size: 0.55rem; color: var(--muted); line-height: 1.5;
-  margin-bottom: 6px; }
 .how   { font-size: 0.62rem; line-height: 1.65; color: #4a4a4a; }
 .how p { margin-bottom: 7px; }
 .how b { color: var(--text); font-weight: 600; }
@@ -69,8 +67,6 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
 #scroll-area { flex: 1; overflow: auto; position: relative; padding: 16px 20px; }
 #chart-container { position: relative; }
 .facet-row { display: flex; gap: 0; align-items: flex-start; margin-bottom: 8px; }
-.facet-label-y { width: 44px; flex-shrink: 0; font-size: 0.55rem; color: var(--muted);
-  text-align: right; padding-right: 6px; text-transform: uppercase; letter-spacing: .06em; }
 .facets-wrap { display: flex; gap: 6px; flex-wrap: nowrap; }
 .facet-panel { display: flex; flex-direction: column; flex-shrink: 0; }
 .facet-header { font-size: 0.8rem; color: var(--muted); text-align: center;
@@ -121,15 +117,11 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
       </div>
     </div>
     <div>
-      <div class="sec-lbl">Select Forecast Horizon</div>
-      <div class="hint">L3 is the forecast made three months ahead, and each one
-        gets its own panel. Click a horizon to add it or remove it.</div>
+      <div class="sec-lbl">Select/Remove Forecast Horizon</div>
       <div class="lag-grid" id="lag-pills"></div>
     </div>
     <div>
-      <div class="sec-lbl">Select Forecast Month</div>
-      <div class="hint">The month being forecast. These are the columns of every
-        panel. Click a month to add it or remove it.</div>
+      <div class="sec-lbl">Select/Remove Forecast Month</div>
       <div class="lag-grid" id="month-pills"></div>
     </div>
     <div>
@@ -236,9 +228,6 @@ function draw() {
     const ML = Math.ceil(Math.max(...features.map(f => f.length)) * LABEL_PX) + 10;
  
     const row  = document.createElement("div"); row.className = "facet-row";
-    const yLbl = document.createElement("div"); yLbl.className = "facet-label-y";
-    yLbl.style.paddingTop = (MH+4)+"px";
-    yLbl.textContent = crop.charAt(0).toUpperCase()+crop.slice(1); row.appendChild(yLbl);
     const wrap = document.createElement("div"); wrap.className = "facets-wrap";
     row.appendChild(wrap); container.appendChild(row);
 
@@ -256,7 +245,7 @@ function draw() {
     const area   = document.getElementById("scroll-area");
     const areaCS = getComputedStyle(area);
     const gap    = parseFloat(getComputedStyle(wrap).gap) || 0;
-    const availW = container.clientWidth - yLbl.offsetWidth - ML
+    const availW = container.clientWidth - ML
                    - (sortedLags.length - 1) * gap;
     const availH = area.clientHeight - parseFloat(areaCS.paddingTop)
                    - parseFloat(areaCS.paddingBottom) - hdrH - MH;
@@ -288,7 +277,8 @@ function draw() {
       };
       const panel = document.createElement("div"); panel.className = "facet-panel";
       const hdr   = document.createElement("div"); hdr.className   = "facet-header";
-      hdr.textContent = l+" Months Forecasts"; panel.appendChild(hdr);
+      hdr.textContent = l+(l===1 ? " month ahead" : " months ahead");
+      panel.appendChild(hdr);
       const svg = d3.select(panel).append("svg")
         .attr("class","heatmap-svg").attr("width",svgW).attr("height",svgH);
       if (isFirst) {
