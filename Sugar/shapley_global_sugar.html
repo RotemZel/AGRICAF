@@ -29,6 +29,8 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
   text-transform: uppercase; letter-spacing: .1em; }
 .sec-lbl { font-size: 0.55rem; text-transform: uppercase; letter-spacing: .12em;
   color: var(--muted); margin-bottom: 7px; }
+.hint  { font-size: 0.55rem; color: var(--muted); line-height: 1.5;
+  margin-bottom: 6px; }
 .how   { font-size: 0.62rem; line-height: 1.65; color: #4a4a4a; }
 .how p { margin-bottom: 7px; }
 .how b { color: var(--text); font-weight: 600; }
@@ -95,8 +97,8 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
     <div class="how">
       <div class="sec-lbl">Reading the figure</div>
       <p>Each row is a predictor and each column a forecast month, with one panel
-         per forecast horizon. Reading a row across shows the same predictor
-         through the year.</p>
+         per forecast horizon. Reading a row across shows how a predictor&rsquo;s
+         role changes through the year.</p>
       <p><b>Relative Intensity</b> is the share of the forecast&rsquo;s total
          explanatory magnitude that a predictor accounts for, pooled over every
          explained year: the size of its Shapley value divided by the size of all
@@ -119,11 +121,15 @@ body { font-family: "Source Code Pro", monospace; color: var(--text); font-size:
       </div>
     </div>
     <div>
-      <div class="sec-lbl">Forecast horizon (lag)</div>
+      <div class="sec-lbl">Select Forecast Horizon</div>
+      <div class="hint">L3 is the forecast made three months ahead, and each one
+        gets its own panel. Click a horizon to add it or remove it.</div>
       <div class="lag-grid" id="lag-pills"></div>
     </div>
     <div>
-      <div class="sec-lbl">Forecast month</div>
+      <div class="sec-lbl">Select Forecast Month</div>
+      <div class="hint">The month being forecast. These are the columns of every
+        panel. Click a month to add it or remove it.</div>
       <div class="lag-grid" id="month-pills"></div>
     </div>
     <div>
@@ -340,7 +346,7 @@ const lagBox = document.getElementById("lag-pills");
 allLags.forEach(l => {
   const b = document.createElement("div");
   b.className = "lag-pill on";
-  b.textContent = "H"+l;
+  b.textContent = "L"+l;
   b.onclick = () => {
     if (view.lags.has(l)) { if (view.lags.size === 1) return; view.lags.delete(l); }
     else { view.lags.add(l); }
@@ -355,7 +361,7 @@ MONTH_NAMES.forEach((name, i) => {
   const m = i + 1;
   const b = document.createElement("div");
   b.className = "lag-pill on";
-  b.textContent = name.slice(0,1);
+  b.textContent = name.slice(0,3);
   b.title = name;
   b.onclick = () => {
     if (view.months.has(m)) { if (view.months.size === 1) return; view.months.delete(m); }
