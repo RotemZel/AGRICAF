@@ -107,17 +107,32 @@
       line-height: 1.6;
     }
 
-    .ra-badge {
-      display: inline-block;
-      background: var(--warm1);
-      border: 1px solid var(--warm3);
-      color: var(--warm5);
+    /* ── How often the direction was called right, one cell per horizon ── */
+    .ra-title {
       font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 0.06em;
-      padding: 0.22rem 0.7rem;
-      border-radius: 99px;
-      margin-top: 0.5rem;
+      color: var(--warm5);
+      margin-top: 0.7rem;
+    }
+    .ra-strip { display: flex; gap: 2px; margin-top: 0.3rem; max-width: 420px; }
+    .ra-cell {
+      flex: 1;
+      text-align: center;
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      padding: 0.3rem 0;
+      border-radius: 3px;
+      cursor: default;
+    }
+    .ra-ends {
+      display: flex;
+      justify-content: space-between;
+      max-width: 420px;
+      font-size: 0.62rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
     }
 
     /* ── Section label ── */
@@ -502,7 +517,9 @@
     <div>
       <h1>Maize</h1>
       <p>Over a fifth of food calories in 21 countries. Almost everywhere else it reaches people converted into something else, as feed or as an industrial ingredient, so its price is felt far more widely than it is seen.</p>
-      <span class="ra-badge">Direction right in 75% of back-tested cases</span>
+      <div class="ra-title">Direction called right, % of back-tested cases</div>
+      <div class="ra-strip"><span class="ra-cell" style="background:#0F8445" title="1 month ahead: direction right in 94% of cases">94</span><span class="ra-cell" style="background:#219B51" title="2 months ahead: direction right in 89% of cases">89</span><span class="ra-cell" style="background:#47AE5B" title="3 months ahead: direction right in 84% of cases">84</span><span class="ra-cell" style="background:#56B55F" title="4 months ahead: direction right in 82% of cases">82</span><span class="ra-cell" style="background:#86CB66" title="5 months ahead: direction right in 75% of cases">75</span><span class="ra-cell" style="background:#86CB66" title="6 months ahead: direction right in 75% of cases">75</span><span class="ra-cell" style="background:#A6D96A" title="7 months ahead: direction right in 70% of cases">70</span><span class="ra-cell" style="background:#BFE47A" title="8 months ahead: direction right in 65% of cases">65</span><span class="ra-cell" style="background:#9FD669" title="9 months ahead: direction right in 71% of cases">71</span><span class="ra-cell" style="background:#B5DF73" title="10 months ahead: direction right in 67% of cases">67</span><span class="ra-cell" style="background:#B5DF73" title="11 months ahead: direction right in 67% of cases">67</span><span class="ra-cell" style="background:#B5DF73" title="12 months ahead: direction right in 67% of cases">67</span></div>
+      <div class="ra-ends"><span>1 month ahead</span><span>12 months ahead</span></div>
     </div>
   </div>
 
@@ -685,83 +702,4 @@
   // page container and onto the body before either can be opened.
   document.querySelectorAll('.overlay').forEach(function (o) { document.body.appendChild(o); });
 
-  // ── Forecast overlay ──
-  function openForecast() {
-    const iframe = document.getElementById('forecast-overlay-iframe');
-    if (!iframe.src) iframe.src = 'Maize/forecast_maize.html';
-    document.getElementById('forecast-overlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeForecast() {
-    document.getElementById('forecast-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  // ── Chart overlay ──
-  // The four explanation charts. Three are written one file per forecast
-  // month and carry a dir, which the month number and .html are appended to.
-  // The global view is a single file and carries a src, so its month
-  // controls are hidden.
-  const CHARTS = {
-    global:       { title: 'Maize · Global overview',      src: 'Maize/shapley_global_maize.html' },
-    local:        { title: 'Maize · By month and horizon', dir: 'Maize/local/shapley_local_maize' },
-    pdp:          { title: 'Maize · Single factor',        dir: 'Maize/pdp/shapley_pdp_maize' },
-    interactions: { title: 'Maize · Factor interactions',  dir: 'Maize/Interactions/interactions_maize' }
-  };
-
-  const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  let activeChart = 'global';
-  let activeMonth = 1;
-
-  function openChart(kind) {
-    activeChart = kind;
-    loadChart();
-    document.getElementById('chart-overlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeChart() {
-    document.getElementById('chart-overlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  function stepMonth(step) {
-    const m = activeMonth + step;
-    if (m >= 1 && m <= 12) { activeMonth = m; loadChart(); }
-  }
-
-  function goToMonth(value) {
-    activeMonth = parseInt(value);
-    loadChart();
-  }
-
-  function loadChart() {
-    const c = CHARTS[activeChart];
-    const perMonth = !!c.dir;
-    document.getElementById('chart-overlay-iframe').src =
-      perMonth ? c.dir + activeMonth + '.html' : c.src;
-    document.getElementById('chart-overlay-title').textContent =
-      perMonth ? c.title + ' · ' + MONTH_NAMES[activeMonth - 1] : c.title;
-    document.getElementById('chart-overlay-nav').style.display = perMonth ? '' : 'none';
-    if (perMonth) {
-      document.getElementById('month-select').value = activeMonth;
-      document.getElementById('prev-btn').disabled = (activeMonth === 1);
-      document.getElementById('next-btn').disabled = (activeMonth === 12);
-    }
-  }
-
-  // ── Keyboard navigation ──
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') { closeForecast(); closeChart(); }
-
-    const open = document.getElementById('chart-overlay').classList.contains('open');
-    if (open && CHARTS[activeChart].dir) {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); stepMonth(1); }
-      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); stepMonth(-1); }
-    }
-  });
-</script>
-
-</body>
-</html>
+  // ── Forecast overlay

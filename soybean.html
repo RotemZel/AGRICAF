@@ -107,17 +107,32 @@
       line-height: 1.6;
     }
 
-    .ra-badge {
-      display: inline-block;
-      background: var(--warm1);
-      border: 1px solid var(--warm3);
-      color: var(--warm5);
+    /* ── How often the direction was called right, one cell per horizon ── */
+    .ra-title {
       font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 0.06em;
-      padding: 0.22rem 0.7rem;
-      border-radius: 99px;
-      margin-top: 0.5rem;
+      color: var(--warm5);
+      margin-top: 0.7rem;
+    }
+    .ra-strip { display: flex; gap: 2px; margin-top: 0.3rem; max-width: 420px; }
+    .ra-cell {
+      flex: 1;
+      text-align: center;
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      padding: 0.3rem 0;
+      border-radius: 3px;
+      cursor: default;
+    }
+    .ra-ends {
+      display: flex;
+      justify-content: space-between;
+      max-width: 420px;
+      font-size: 0.62rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
     }
 
     /* ── Section label ── */
@@ -502,7 +517,9 @@
     <div>
       <h1>Soybean</h1>
       <p>The world's main source of plant protein, and mostly eaten indirectly: most of the crop feeds livestock, so its price passes into meat, milk and eggs. Trade runs from the Americas to East Asia.</p>
-      <span class="ra-badge">Direction right in 75% of back-tested cases</span>
+      <div class="ra-title">Direction called right, % of back-tested cases</div>
+      <div class="ra-strip"><span class="ra-cell" style="background:#30A355" title="1 month ahead: direction right in 87% of cases">87</span><span class="ra-cell" style="background:#66BD63" title="2 months ahead: direction right in 80% of cases">80</span><span class="ra-cell" style="background:#86CB66" title="3 months ahead: direction right in 75% of cases">75</span><span class="ra-cell" style="background:#9FD669" title="4 months ahead: direction right in 71% of cases">71</span><span class="ra-cell" style="background:#B0DD70" title="5 months ahead: direction right in 68% of cases">68</span><span class="ra-cell" style="background:#99D368" title="6 months ahead: direction right in 72% of cases">72</span><span class="ra-cell" style="background:#79C565" title="7 months ahead: direction right in 77% of cases">77</span><span class="ra-cell" style="background:#79C565" title="8 months ahead: direction right in 77% of cases">77</span><span class="ra-cell" style="background:#92D067" title="9 months ahead: direction right in 73% of cases">73</span><span class="ra-cell" style="background:#9FD669" title="10 months ahead: direction right in 71% of cases">71</span><span class="ra-cell" style="background:#9FD669" title="11 months ahead: direction right in 71% of cases">71</span><span class="ra-cell" style="background:#86CB66" title="12 months ahead: direction right in 75% of cases">75</span></div>
+      <div class="ra-ends"><span>1 month ahead</span><span>12 months ahead</span></div>
     </div>
   </div>
 
